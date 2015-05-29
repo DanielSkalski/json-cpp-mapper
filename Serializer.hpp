@@ -15,7 +15,7 @@ using namespace std;
 template<class T>
 class Serializer
 {
-    list< PropertyDefinition<T>* > m_properties;
+    list< PropertyDefinitionBase<T>* > m_properties;
     PropertyDefinitionFactory<T> m_propertyDefinitionFactory;
 
 public:
@@ -23,23 +23,20 @@ public:
     Serializer();
     virtual ~Serializer();
 
-    void map
-            (const string&               propertyName,
+    void map(const string&               propertyName,
              function<string (const T&)> valueFunction,
              PropertyKind                propertyKind = PropertyKind::String);
 
     template<class IT>
-    void map
-            (const string &              propertyName,
+    void map(const string &              propertyName,
              function<IT (const T &)>    valueFunction,
              const Serializer<IT>&       objectSerializer);
 
     template<class IT>
-    void mapArrayOf
-            (const string &              propertyName,
-             function<int (const T &)>   collectionSizeFunction,
-             function<IT (const T &, int)>    elementAccessFunction,
-             const Serializer<IT>&       elementSerializer);
+    void mapArrayOf(const string &                propertyName,
+                    function<int (const T &)>     collectionSizeFunction,
+                    function<IT (const T &, int)> elementAccessFunction,
+                    const Serializer<IT>&         elementSerializer);
 
     string serialize(const T& obj) const;
 };
@@ -56,7 +53,7 @@ Serializer<T>::Serializer()
 template<class T>
 Serializer<T>::~Serializer()
 {
-    for (PropertyDefinition<T>* prop : m_properties)
+    for (PropertyDefinitionBase<T>* prop : m_properties)
     {
         delete prop;
     }
@@ -64,8 +61,8 @@ Serializer<T>::~Serializer()
 
 template<class T>
 void Serializer<T>::map(const string& propertyName,
-                     function<string (const T&)> valueFunction,
-                     PropertyKind propertyKind)
+                        function<string (const T&)> valueFunction,
+                        PropertyKind propertyKind)
 {
     auto propertyDefinition = m_propertyDefinitionFactory
                                 .createPropertyDefinition(propertyName, valueFunction, propertyKind);
@@ -76,8 +73,8 @@ void Serializer<T>::map(const string& propertyName,
 template<class T>
 template<class IT>
 void Serializer<T>::map(const string &propertyName,
-         function<IT (const T &)> valueFunction,
-         const Serializer<IT>& objectSerializer)
+                        function<IT (const T &)> valueFunction,
+                        const Serializer<IT>& objectSerializer)
 {
     auto propertyDefinition = m_propertyDefinitionFactory
                                 .createPropertyDefinition(propertyName, valueFunction, objectSerializer);
@@ -87,11 +84,10 @@ void Serializer<T>::map(const string &propertyName,
 
 template<class T>
 template<class IT>
-void Serializer<T>::mapArrayOf
-        (const string &              propertyName,
-         function<int (const T &)>   collectionSizeFunction,
-         function<IT (const T &, int)>  elementAccessFunction,
-         const Serializer<IT>&       elementSerializer)
+void Serializer<T>::mapArrayOf(const string &                propertyName,
+                               function<int (const T &)>     collectionSizeFunction,
+                               function<IT (const T &, int)> elementAccessFunction,
+                               const Serializer<IT>&         elementSerializer)
 {
     auto arrayPropertyDefinition = m_propertyDefinitionFactory
                                 .createArrayPropertyDefinition(propertyName,
@@ -110,7 +106,7 @@ string Serializer<T>::serialize(const T& obj) const
 
     out << "{" << endl;
 
-    for (PropertyDefinition<T>* prop : m_properties)
+    for (PropertyDefinitionBase<T>* prop : m_properties)
     {
         string value = prop->serializeValue(obj);
 

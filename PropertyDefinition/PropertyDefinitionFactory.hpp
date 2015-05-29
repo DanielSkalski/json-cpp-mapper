@@ -2,6 +2,7 @@
 #define PROPERTYDEFINITIONFACTORY_H
 
 #include "PropertyKind.h"
+#include "PropertyDefinitionBase.h"
 #include "PropertyDefinition.hpp"
 #include "ObjectPropertyDefinition.hpp"
 #include "ArrayPropertyDefinition.hpp"
@@ -16,17 +17,17 @@ template<class T>
 class PropertyDefinitionFactory
 {
 public:
-    PropertyDefinition<T>* createPropertyDefinition(string propertyName,
+    PropertyDefinitionBase<T>* createPropertyDefinition(string propertyName,
                                                    function<string (const T&)> valueFunction,
                                                    PropertyKind propertyKind = PropertyKind::String) const;
 
     template<class IT>
-    PropertyDefinition<T>* createPropertyDefinition(string propertyName,
+    PropertyDefinitionBase<T>* createPropertyDefinition(string propertyName,
                                                    function<IT (const T&)> valueFunction,
                                                    const Serializer<IT>& objectSerializer) const;
 
     template<class IT>
-    PropertyDefinition<T>* createArrayPropertyDefinition(const string& propertyName,
+    PropertyDefinitionBase<T>* createArrayPropertyDefinition(const string& propertyName,
                                                          function<int (const T&)> collectionSizeFunction,
                                                          function<IT (const T&, int)> elementAccessFunction,
                                                          const Serializer<IT>& elementSerializer) const;
@@ -35,7 +36,7 @@ public:
 // ----------------------------------------------------------------------------
 
 template<class T>
-PropertyDefinition<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(string propertyName,
+PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(string propertyName,
                                                        function<string (const T&)> valueFunction,
                                                        PropertyKind propertyKind) const
 {
@@ -49,7 +50,7 @@ PropertyDefinition<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(st
 
 template<class T>
 template<class IT>
-PropertyDefinition<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(string propertyName,
+PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(string propertyName,
                                                        function<IT (const T&)> valueFunction,
                                                        const Serializer<IT>& objectSerializer) const
 {
@@ -65,7 +66,7 @@ PropertyDefinition<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(st
 
 template<class T>
 template<class IT>
-PropertyDefinition<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition(
+PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition(
                                                         const string& propertyName,
                                                         function<int (const T&)> collectionSizeFunction,
                                                         function<IT (const T&, int)> elementAccessFunction,

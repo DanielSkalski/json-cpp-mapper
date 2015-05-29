@@ -1,7 +1,7 @@
 #ifndef PROPERTYDEFINITION_H
 #define PROPERTYDEFINITION_H
 
-#include "PropertyKind.h"
+#include "PropertyDefinitionBase.h"
 
 #include <functional>
 #include <sstream>
@@ -11,16 +11,14 @@ using namespace std;
 
 
 template<class T>
-class PropertyDefinition
+class PropertyDefinition : public PropertyDefinitionBase<T>
 {
 public:
     virtual ~PropertyDefinition() { }
 
-    string propertyName;
     function<string (const T&)> mapping;
-    PropertyKind propertyKind;
 
-    virtual string serializeValue(const T& obj) const;
+    string serializeValue(const T& obj) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -31,17 +29,13 @@ string PropertyDefinition<T>::serializeValue(const T& obj) const
 {
     stringstream out;
 
-    if (propertyKind == PropertyKind::String)
+    if (this->propertyKind == PropertyKind::String)
     {
         out << "\"" << mapping(obj) << "\"";
     }
-    else if (propertyKind == PropertyKind::Value)
+    else if (this->propertyKind == PropertyKind::Value)
     {
         out << mapping(obj);
-    }
-    else if (propertyKind == PropertyKind::Object)
-    {
-        out << "tutaj lol";
     }
 
     return out.str();

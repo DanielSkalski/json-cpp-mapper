@@ -1,7 +1,7 @@
 #ifndef ARRAYPROPERTYDEFINITION_H
 #define ARRAYPROPERTYDEFINITION_H
 
-#include "PropertyDefinition.hpp"
+#include "PropertyDefinitionBase.h"
 
 #include <functional>
 #include <sstream>
@@ -14,7 +14,7 @@ class Serializer;
 
 
 template<class T, class OT>
-class ArrayPropertyDefinition : public PropertyDefinition<T>
+class ArrayPropertyDefinition : public PropertyDefinitionBase<T>
 {
 public:
     virtual ~ArrayPropertyDefinition() { }

@@ -1,7 +1,7 @@
 #ifndef OBJECTPROPERTYDEFINITION_H
 #define OBJECTPROPERTYDEFINITION_H
 
-#include "PropertyDefinition.hpp"
+#include "PropertyDefinitionBase.h"
 
 #include <functional>
 #include <sstream>
@@ -14,7 +14,7 @@ template<class T>
 class Serializer;
 
 template<class T, class OT>
-class ObjectPropertyDefinition : public PropertyDefinition<T>
+class ObjectPropertyDefinition : public PropertyDefinitionBase<T>
 {
 public:
     virtual ~ObjectPropertyDefinition() { }
