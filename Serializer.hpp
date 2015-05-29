@@ -23,14 +23,23 @@ public:
     Serializer();
     virtual ~Serializer();
 
-    void map(const string&               propertyName,
+    void map
+            (const string&               propertyName,
              function<string (const T&)> valueFunction,
              PropertyKind                propertyKind = PropertyKind::String);
 
     template<class IT>
-    void map(const string &           propertyName,
-             function<IT (const T &)> valueFunction,
-             const Serializer<IT>&    objectSerializer);
+    void map
+            (const string &              propertyName,
+             function<IT (const T &)>    valueFunction,
+             const Serializer<IT>&       objectSerializer);
+
+    template<class IT>
+    void mapArrayOf
+            (const string &              propertyName,
+             function<int (const T &)>   collectionSizeFunction,
+             function<IT (const T &, int)>    elementAccessFunction,
+             const Serializer<IT>&       elementSerializer);
 
     string serialize(const T& obj) const;
 };
@@ -75,6 +84,24 @@ void Serializer<T>::map(const string &propertyName,
 
     m_properties.push_back(propertyDefinition);
 }
+
+template<class T>
+template<class IT>
+void Serializer<T>::mapArrayOf
+        (const string &              propertyName,
+         function<int (const T &)>   collectionSizeFunction,
+         function<IT (const T &, int)>  elementAccessFunction,
+         const Serializer<IT>&       elementSerializer)
+{
+    auto arrayPropertyDefinition = m_propertyDefinitionFactory
+                                .createArrayPropertyDefinition(propertyName,
+                                                               collectionSizeFunction,
+                                                               elementAccessFunction,
+                                                               elementSerializer);
+
+    m_properties.push_back(arrayPropertyDefinition);
+}
+
 
 template<class T>
 string Serializer<T>::serialize(const T& obj) const

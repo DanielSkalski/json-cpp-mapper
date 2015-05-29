@@ -4,6 +4,7 @@
 #include "PropertyKind.h"
 #include "PropertyDefinition.hpp"
 #include "ObjectPropertyDefinition.hpp"
+#include "ArrayPropertyDefinition.hpp"
 
 #include <functional>
 #include <sstream>
@@ -23,6 +24,12 @@ public:
     PropertyDefinition<T>* createPropertyDefinition(string propertyName,
                                                    function<IT (const T&)> valueFunction,
                                                    const Serializer<IT>& objectSerializer) const;
+
+    template<class IT>
+    PropertyDefinition<T>* createArrayPropertyDefinition(const string& propertyName,
+                                                         function<int (const T&)> collectionSizeFunction,
+                                                         function<IT (const T&, int)> elementAccessFunction,
+                                                         const Serializer<IT>& elementSerializer) const;
 };
 
 // ----------------------------------------------------------------------------
@@ -34,7 +41,7 @@ PropertyDefinition<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(st
 {
     auto propertyDefinition = new PropertyDefinition<T>;
     propertyDefinition->propertyName = propertyName;
-    propertyDefinition->mapping = valueFunction;
+    propertyDefinition->mapping      = valueFunction;
     propertyDefinition->propertyKind = propertyKind;
 
     return propertyDefinition;
@@ -47,10 +54,29 @@ PropertyDefinition<T>* PropertyDefinitionFactory<T>::createPropertyDefinition(st
                                                        const Serializer<IT>& objectSerializer) const
 {
     auto propertyDefinition = new ObjectPropertyDefinition<T, IT>;
-    propertyDefinition->propertyName = propertyName;
+    propertyDefinition->propertyName  = propertyName;
     propertyDefinition->mappingObject = valueFunction;
-    propertyDefinition->propertyKind = PropertyKind::Object;
-    propertyDefinition->serializer = objectSerializer;
+    propertyDefinition->serializer    = objectSerializer;
+    propertyDefinition->propertyKind  = PropertyKind::Object;
+
+    return propertyDefinition;
+}
+
+
+template<class T>
+template<class IT>
+PropertyDefinition<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition(
+                                                        const string& propertyName,
+                                                        function<int (const T&)> collectionSizeFunction,
+                                                        function<IT (const T&, int)> elementAccessFunction,
+                                                        const Serializer<IT>& elementSerializer) const
+{
+    auto propertyDefinition = new ArrayPropertyDefinition<T, IT>;
+    propertyDefinition->propertyName      = propertyName;
+    propertyDefinition->arraySize         = collectionSizeFunction;
+    propertyDefinition->elementAccess     = elementAccessFunction;
+    propertyDefinition->elementSerializer = elementSerializer;
+    propertyDefinition->propertyKind      = PropertyKind::Array;
 
     return propertyDefinition;
 }

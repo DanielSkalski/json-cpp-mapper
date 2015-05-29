@@ -16,5 +16,6 @@ HEADERS += \
     PropertyDefinition/PropertyDefinitionFactory.hpp \
     PropertyDefinition/PropertyDefinition.hpp \
     PropertyDefinition/ObjectPropertyDefinition.hpp \
-    Serializer.hpp
+    Serializer.hpp \
+    PropertyDefinition/ArrayPropertyDefinition.hpp
 
