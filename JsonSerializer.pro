@@ -5,11 +5,16 @@ CONFIG -= qt
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    JsonSerializationMapper.cpp
+    PropertyDefinition/PropertyDefinitionBase.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
 
 HEADERS += \
-    JsonSerializationMapper.h
+    PropertyDefinition/PropertyDefinitionBase.h \
+    PropertyDefinition/PropertyKind.h \
+    PropertyDefinition/PropertyDefinitionFactory.hpp \
+    PropertyDefinition/PropertyDefinition.hpp \
+    PropertyDefinition/ObjectPropertyDefinition.hpp \
+    Serializer.hpp
 
