@@ -2,7 +2,9 @@
 #include <string>
 #include <vector>
 
-#include "Serializer.hpp"
+#include "Mapping.hpp"
+#include "Serializer/ObjectSerializer.hpp"
+
 
 using namespace std;
 
@@ -32,10 +34,28 @@ public:
     vector<Book> books;
 };
 
+class NumbersCollection
+{
+public:
+    string name;
+    int* numbers;
+    int count;
+};
+
+class StringsCollection
+{
+public:
+    string name;
+    string* values;
+    int count;
+};
 
 #define JSON_VALUE_FUNC(T, RET)     [](const T& x) -> string { return x.RET; }
 #define JSON_VALUE_FUNC_INT(T, RET) [](const T& x) -> int    { return x.RET; }
+#define JSON_VALUE_FUNC_FLOAT(T, RET) [](const T& x) -> float    { return x.RET; }
+
 #define JSON_VALUE_FUNC_(T, RET)    [](const T& x) -> string { return to_string(x.RET); }
+
 
 int main()
 {
@@ -46,26 +66,59 @@ int main()
     vector<Book> books { book, book2, book3 };
     Shelf shelf {"Fantastyka", 23, books};
 
-    Serializer<Book> bookSerializer;
-    bookSerializer.map("Title", JSON_VALUE_FUNC(Book, title));
-    bookSerializer.map("Author", JSON_VALUE_FUNC(Book, author));
-    bookSerializer.map("Price", JSON_VALUE_FUNC_(Book, something), PropertyKind::Value);
+    Mapping<Book> bookMapping;
+    bookMapping.map("Title", JSON_VALUE_FUNC(Book, title));
+    bookMapping.map("Author", JSON_VALUE_FUNC(Book, author));
+    bookMapping.map<float>("Price", JSON_VALUE_FUNC_FLOAT(Book, something));
 
-    Serializer<A> s;
-    s.map("name", JSON_VALUE_FUNC(A, name));
-    s.map("title", JSON_VALUE_FUNC(A, title));
-    s.map("number", JSON_VALUE_FUNC_(A, number), PropertyKind::Value);
-    s.map<Book>("book", [](const A& x) -> Book { return x.book; }, bookSerializer);
+    ObjectSerializer<Book> bookSerializer(bookMapping);
 
-    Serializer<Shelf> shelfSerializer;
-    shelfSerializer.map("name", JSON_VALUE_FUNC(Shelf, name));
-    shelfSerializer.map("number", JSON_VALUE_FUNC_(Shelf, number), PropertyKind::Value);
-    shelfSerializer.mapArrayOf<Book>("books",
+    cout << bookSerializer.serialize(book);
+
+    Mapping<A> aMapping;
+    aMapping.map("name", JSON_VALUE_FUNC(A, name));
+    aMapping.map("title", JSON_VALUE_FUNC(A, title));
+    aMapping.map<int>("number", JSON_VALUE_FUNC_INT(A, number));
+    aMapping.map<Book>("book", [](const A& x) -> Book { return x.book; }, bookMapping);
+
+    ObjectSerializer<A> aSerializer(aMapping);
+
+    cout << aSerializer.serialize(a);
+
+    Mapping<Shelf> shelfMapping;
+    shelfMapping.map("name", JSON_VALUE_FUNC(Shelf, name));
+    shelfMapping.map<int>("number", JSON_VALUE_FUNC_INT(Shelf, number));
+    shelfMapping.mapArrayOf<Book>("books",
                                      [](const Shelf& x) -> int { return x.books.size(); },
                                      [](const Shelf& x, int index) -> Book { return x.books[index]; },
-                                     bookSerializer);
+                                     bookMapping);
+
+    ObjectSerializer<Shelf> shelfSerializer(shelfMapping);
 
     cout << shelfSerializer.serialize(shelf);
+
+    NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
+    Mapping<NumbersCollection> numbersMapping;
+    numbersMapping.map("name", JSON_VALUE_FUNC(NumbersCollection, name));
+    numbersMapping.mapArrayOfValues<int>
+                                   ("values",
+                                    [](const NumbersCollection& x) -> int { return x.count; },
+                                    [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
+
+    ObjectSerializer<NumbersCollection> numbersSerializer(numbersMapping);
+
+    cout << numbersSerializer.serialize(numbers);
+
+    StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
+    Mapping<StringsCollection> stringsMapping;
+    stringsMapping.map("name", JSON_VALUE_FUNC(StringsCollection, name));
+    stringsMapping.mapArrayOfStrings("values",
+                                     [](const StringsCollection& x) -> int { return x.count; },
+                                     [](const StringsCollection& x, int index) -> string { return x.values[index]; });
+
+    ObjectSerializer<StringsCollection> stringsSerializer(stringsMapping);
+
+    cout << stringsSerializer.serialize(strings);
 
     return 0;
 }

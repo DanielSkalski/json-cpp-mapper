@@ -10,35 +10,41 @@
 using namespace std;
 
 
-template<class T>
-class PropertyDefinition : public PropertyDefinitionBase<T>
+template<class OBJ_T, class PROPERTY_T>
+class PropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 {
 public:
     virtual ~PropertyDefinition() { }
 
-    function<string (const T&)> mapping;
+    PropertyKind _propertyKind;
 
-    string serializeValue(const T& obj) const override;
+    ISerializer<PROPERTY_T>* serializer;
+
+    function<PROPERTY_T (const OBJ_T&)> getValueFunction;
+
+    string serializeValue(const OBJ_T& obj) const override;
+
+    PropertyKind propertyKind() const override;
 };
 
 // ----------------------------------------------------------------------------
 
-
-template<class T>
-string PropertyDefinition<T>::serializeValue(const T& obj) const
+template<class OBJ_T, class PROPERTY_T>
+string PropertyDefinition<OBJ_T, PROPERTY_T>::serializeValue(const OBJ_T& obj) const
 {
     stringstream out;
 
-    if (this->propertyKind == PropertyKind::String)
-    {
-        out << "\"" << mapping(obj) << "\"";
-    }
-    else if (this->propertyKind == PropertyKind::Value)
-    {
-        out << mapping(obj);
-    }
+    PROPERTY_T value = getValueFunction(obj);
+
+    out << serializer->serialize(value);
 
     return out.str();
+}
+
+template<class OBJ_T, class PROPERTY_T>
+PropertyKind PropertyDefinition<OBJ_T, PROPERTY_T>::propertyKind() const
+{
+    return _propertyKind;
 }
 
 #endif // PROPERTYDEFINITION_H
