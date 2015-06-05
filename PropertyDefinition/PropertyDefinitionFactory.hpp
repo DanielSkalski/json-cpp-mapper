@@ -10,6 +10,7 @@
 #include "Serializer/StringSerializer.hpp"
 #include "Serializer/ValueSerializer.hpp"
 #include "Serializer/ObjectSerializer.hpp"
+#include "Serializer/ArraySerializer.hpp"
 
 #include <functional>
 #include <sstream>
@@ -112,10 +113,16 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
                                                      const Mapping<ELEM_T>& elementTypeMapping) const
 {
     auto propertyDefinition = new ArrayPropertyDefinition<T, ELEM_T>;
-    propertyDefinition->propertyName      = propertyName;
-    propertyDefinition->arraySize         = collectionSizeFunction;
-    propertyDefinition->elementAccess     = elementAccessFunction;
-    propertyDefinition->elementSerializer = new ObjectSerializer<ELEM_T>(elementTypeMapping);
+    propertyDefinition->propertyName   = propertyName;
+    propertyDefinition->arraySize      = collectionSizeFunction;
+    propertyDefinition->elementAccess  = elementAccessFunction;
+
+    auto arraySerializer = new ArraySerializer<T, ELEM_T>;
+    arraySerializer->arraySize         = collectionSizeFunction;
+    arraySerializer->elementAccess     = elementAccessFunction;
+    arraySerializer->elementSerializer = new ObjectSerializer<ELEM_T>(elementTypeMapping);
+
+    propertyDefinition->serializer     = arraySerializer;
 
     return propertyDefinition;
 }
@@ -129,10 +136,16 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
                                                      function<ELEM_T (const T&, int)> elementAccessFunction) const
 {
     auto propertyDefinition = new ArrayPropertyDefinition<T, ELEM_T>;
-    propertyDefinition->propertyName      = propertyName;
-    propertyDefinition->arraySize         = collectionSizeFunction;
-    propertyDefinition->elementAccess     = elementAccessFunction;
-    propertyDefinition->elementSerializer = new ValueSerializer<ELEM_T>();
+    propertyDefinition->propertyName   = propertyName;
+    propertyDefinition->arraySize      = collectionSizeFunction;
+    propertyDefinition->elementAccess  = elementAccessFunction;
+
+    auto arraySerializer = new ArraySerializer<T, ELEM_T>;
+    arraySerializer->arraySize         = collectionSizeFunction;
+    arraySerializer->elementAccess     = elementAccessFunction;
+    arraySerializer->elementSerializer = new ValueSerializer<ELEM_T>();
+
+    propertyDefinition->serializer     = arraySerializer;
 
     return propertyDefinition;
 }
@@ -144,10 +157,16 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
                                                      function<string (const T&, int)> elementAccessFunction) const
 {
     auto propertyDefinition = new ArrayPropertyDefinition<T, string>;
-    propertyDefinition->propertyName      = propertyName;
-    propertyDefinition->arraySize         = collectionSizeFunction;
-    propertyDefinition->elementAccess     = elementAccessFunction;
-    propertyDefinition->elementSerializer = new StringSerializer();
+    propertyDefinition->propertyName   = propertyName;
+    propertyDefinition->arraySize      = collectionSizeFunction;
+    propertyDefinition->elementAccess  = elementAccessFunction;
+
+    auto arraySerializer = new ArraySerializer<T, string>;
+    arraySerializer->arraySize         = collectionSizeFunction;
+    arraySerializer->elementAccess     = elementAccessFunction;
+    arraySerializer->elementSerializer = new StringSerializer();
+
+    propertyDefinition->serializer     = arraySerializer;
 
     return propertyDefinition;
 }

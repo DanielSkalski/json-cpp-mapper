@@ -2,11 +2,17 @@
 #define ARRAYSERIALIZER_H
 
 #include "ISerializer.h"
+#include <functional>
 
 template<class OBJ_T, class ELEMENT_T>
-class ArraySerializer : ISerializer<OBJ_T>
+class ArraySerializer : public ISerializer<OBJ_T>
 {
 public:
+    ArraySerializer()
+    {
+
+    }
+
     explicit ArraySerializer(ISerializer<ELEMENT_T>* elementSerializer)
     {
         this->elementSerializer = elementSerializer;
@@ -15,6 +21,8 @@ public:
     virtual ~ArraySerializer() {}
 
     ISerializer<ELEMENT_T>* elementSerializer;
+    function<int (const OBJ_T&)> arraySize;
+    function<ELEMENT_T (const OBJ_T&, int)> elementAccess;
 
     string serialize(const OBJ_T &obj) const override;
 };
@@ -33,11 +41,6 @@ string ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj) const
         ELEMENT_T value = elementAccess(obj, i);
 
         string serializedValue = elementSerializer->serialize(value);
-
-        if (serializedValue.empty())
-        {
-            serializedValue = "null";
-        }
 
         out << serializedValue << "," << endl;
     }

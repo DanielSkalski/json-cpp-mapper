@@ -17,7 +17,7 @@ class ArrayPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 public:
     virtual ~ArrayPropertyDefinition() { }
 
-    ISerializer<ELEMENT_T>* elementSerializer;
+    ISerializer<OBJ_T>* serializer;
 
     function<int (const OBJ_T&)> arraySize;
     function<ELEMENT_T (const OBJ_T&, int)> elementAccess;
@@ -33,28 +33,7 @@ public:
 template<class OBJ_T, class ELEMENT_T>
 string ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::serializeValue(const OBJ_T &obj) const
 {
-    stringstream out;
-
-    out << "[" << endl;
-
-    for (int i = 0; i < arraySize(obj); i++)
-    {
-        ELEMENT_T value = elementAccess(obj, i);
-
-        string serializedValue = elementSerializer->serialize(value);
-
-        out << serializedValue << "," << endl;
-    }
-
-    if (arraySize(obj) > 0)
-    {
-        // remove last "," sign
-        out.seekp(-2, out.cur);
-    }
-
-    out << "]" << endl;
-
-    return out.str();
+    return serializer->serialize(obj);
 }
 
 template<class OBJ_T, class ELEMENT_T>
