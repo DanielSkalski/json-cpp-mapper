@@ -51,6 +51,13 @@ public:
                    (const string &                    propertyName,
                     function<int (const T &)>         collectionSizeFunction,
                     function<ELEM_T (const T &, int)> elementAccessFunction);
+
+    void mapArrayOfStringArrays
+                   (const string &                    propertyName,
+                    function<int (const T &)>         collectionSizeFunction,
+                    function<string* (const T &, int)> elementAccessFunction,
+                    function<int (const string*)>    innerCollectionSizeFunction,
+                    function<string (const string*, int)> innerArrayElementAccessFunction);
 };
 
 // ----------------------------------------------------------------------------
@@ -149,5 +156,24 @@ void Mapping<T>::mapArrayOfValues
 
     m_properties.push_back(arrayPropertyDefinition);
 }
+
+template<class T>
+void Mapping<T>::mapArrayOfStringArrays
+               (const string &                    propertyName,
+                function<int (const T &)>         collectionSizeFunction,
+                function<string* (const T &, int)> elementAccessFunction,
+                function<int (const string*)>    innerCollectionSizeFunction,
+                function<string (const string*, int)> innerArrayElementAccessFunction)
+{
+    auto arrayPropertyDefinition = m_propertyDefinitionFactory
+                                .createArrayPropertyDefinition(propertyName,
+                                                               collectionSizeFunction,
+                                                               elementAccessFunction,
+                                                               innerCollectionSizeFunction,
+                                                               innerArrayElementAccessFunction);
+
+    m_properties.push_back(arrayPropertyDefinition);
+}
+
 
 #endif // SERIALIZER_H

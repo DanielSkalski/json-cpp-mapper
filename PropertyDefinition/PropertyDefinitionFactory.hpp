@@ -54,6 +54,13 @@ public:
                                                     (const string& propertyName,
                                                      function<int (const T&)> collectionSizeFunction,
                                                      function<string (const T&, int)> elementAccessFunction) const;
+
+    PropertyDefinitionBase<T>* createArrayPropertyDefinition
+                                                    (const string& propertyName,
+                                                     function<int (const T&)> collectionSizeFunction,
+                                                     function<string* (const T&, int)> elementAccessFunction,
+                                                     function<int (const string*)> innerCollectionSizeFunction,
+                                                     function<string (const string*, int)> innerElementAccessFunction) const;
 };
 
 // ----------------------------------------------------------------------------
@@ -165,6 +172,35 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
     arraySerializer->arraySize         = collectionSizeFunction;
     arraySerializer->elementAccess     = elementAccessFunction;
     arraySerializer->elementSerializer = new StringSerializer();
+
+    propertyDefinition->serializer     = arraySerializer;
+
+    return propertyDefinition;
+}
+
+
+template<class T>
+PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition
+                                                (const string& propertyName,
+                                                 function<int (const T&)> collectionSizeFunction,
+                                                 function<string* (const T&, int)> elementAccessFunction,
+                                                 function<int (const string*)> innerCollectionSizeFunction,
+                                                 function<string (const string*, int)> innerElementAccessFunction) const
+{
+    auto propertyDefinition = new ArrayPropertyDefinition<T, string*>;
+    propertyDefinition->propertyName   = propertyName;
+    propertyDefinition->arraySize      = collectionSizeFunction;
+    propertyDefinition->elementAccess  = elementAccessFunction;
+
+    auto innerArraySerializer = new ArraySerializer<string*, string>;
+    innerArraySerializer->arraySize         = innerCollectionSizeFunction;
+    innerArraySerializer->elementAccess     = innerElementAccessFunction;
+    innerArraySerializer->elementSerializer = new StringSerializer();
+
+    auto arraySerializer = new ArraySerializer<T, string*>;
+    arraySerializer->arraySize         = collectionSizeFunction;
+    arraySerializer->elementAccess     = elementAccessFunction;
+    arraySerializer->elementSerializer = innerArraySerializer;
 
     propertyDefinition->serializer     = arraySerializer;
 

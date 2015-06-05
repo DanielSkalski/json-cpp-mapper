@@ -50,6 +50,11 @@ public:
     int count;
 };
 
+struct StringsMultiArray
+{
+    string** values;
+};
+
 #define JSON_VALUE_FUNC(T, RET)     [](const T& x) -> string { return x.RET; }
 #define JSON_VALUE_FUNC_INT(T, RET) [](const T& x) -> int    { return x.RET; }
 #define JSON_VALUE_FUNC_FLOAT(T, RET) [](const T& x) -> float    { return x.RET; }
@@ -119,6 +124,28 @@ int main()
     ObjectSerializer<StringsCollection> stringsSerializer(stringsMapping);
 
     cout << stringsSerializer.serialize(strings);
+
+
+    StringsMultiArray multiStrings
+    {
+        new string* [3]
+        {
+            new string[3] {"Ala", "ma", "kota"},
+            new string[3] {"Kota", "ma", "Ala"},
+            new string[3] {"Ola", "posiada", "psa"},
+        }
+    };
+
+    Mapping<StringsMultiArray> multiStringsMapping;
+    multiStringsMapping.mapArrayOfStringArrays("values",
+                                   [](const StringsMultiArray& x) -> int { return 3; },
+                                   [](const StringsMultiArray& x, int index) -> string* { return x.values[index]; },
+                                   [](const string* x) -> int { return 3; },
+                                   [](const string* x, int index) -> string { return x[index]; });
+
+
+    ObjectSerializer<StringsMultiArray> multiStringsSerializer(multiStringsMapping);
+    cout << multiStringsSerializer.serialize(multiStrings);
 
     return 0;
 }
