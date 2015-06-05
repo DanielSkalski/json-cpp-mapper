@@ -5,10 +5,10 @@
 #include <string>
 
 template<class T>
-class ValueSerializer : public ISerializer<T>
+class NumberSerializer : public ISerializer<T>
 {
 public:
-    virtual ~ValueSerializer() { }
+    virtual ~NumberSerializer() { }
 
     string serialize(const T &value) const override;
 };
@@ -16,7 +16,7 @@ public:
 // ----------------------------------------------------------------------------
 
 template<class T>
-string ValueSerializer<T>::serialize(const T &value) const
+string NumberSerializer<T>::serialize(const T &value) const
 {
     std::stringstream out;
 

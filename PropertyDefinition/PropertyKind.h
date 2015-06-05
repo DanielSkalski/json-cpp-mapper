@@ -4,9 +4,10 @@
 enum class PropertyKind
 {
     String,
-    Value,
+    Number,
     Array,
-    Object
+    Object,
+    Boolean
 };
 
 #endif // PROPERTYKIND

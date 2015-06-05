@@ -105,7 +105,7 @@ int main()
     NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
     Mapping<NumbersCollection> numbersMapping;
     numbersMapping.map("name", JSON_VALUE_FUNC(NumbersCollection, name));
-    numbersMapping.mapArrayOfValues<int>
+    numbersMapping.mapArrayOfNumbers<int>
                                    ("values",
                                     [](const NumbersCollection& x) -> int { return x.count; },
                                     [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
@@ -138,9 +138,9 @@ int main()
 
     Mapping<StringsMultiArray> multiStringsMapping;
     multiStringsMapping.mapArrayOfStringArrays("values",
-                                   [](const StringsMultiArray& x) -> int { return 3; },
+                                   [](const StringsMultiArray&) -> int { return 3; },
                                    [](const StringsMultiArray& x, int index) -> string* { return x.values[index]; },
-                                   [](const string* x) -> int { return 3; },
+                                   [](const string*) -> int { return 3; },
                                    [](const string* x, int index) -> string { return x[index]; });
 
 

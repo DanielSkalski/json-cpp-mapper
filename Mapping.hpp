@@ -47,7 +47,7 @@ public:
                     function<string (const T &, int)> elementAccessFunction);
 
     template<typename ELEM_T>
-    void mapArrayOfValues
+    void mapArrayOfNumbers
                    (const string &                    propertyName,
                     function<int (const T &)>         collectionSizeFunction,
                     function<ELEM_T (const T &, int)> elementAccessFunction);
@@ -144,7 +144,7 @@ void Mapping<T>::mapArrayOfStrings
 
 template<class T>
 template<class ELEM_T>
-void Mapping<T>::mapArrayOfValues
+void Mapping<T>::mapArrayOfNumbers
                (const string &                    propertyName,
                 function<int (const T &)>         collectionSizeFunction,
                 function<ELEM_T (const T &, int)> elementAccessFunction)

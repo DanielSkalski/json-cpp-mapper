@@ -8,7 +8,7 @@
 #include "ArrayPropertyDefinition.hpp"
 
 #include "Serializer/StringSerializer.hpp"
-#include "Serializer/ValueSerializer.hpp"
+#include "Serializer/NumberSerializer.hpp"
 #include "Serializer/ObjectSerializer.hpp"
 #include "Serializer/ArraySerializer.hpp"
 
@@ -88,8 +88,8 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createValuePropertyDefi
     auto propertyDefinition = new PropertyDefinition<T, PROP_T>;
     propertyDefinition->propertyName     = propertyName;
     propertyDefinition->getValueFunction = valueFunction;
-    propertyDefinition->serializer       = new ValueSerializer<PROP_T>();
-    propertyDefinition->_propertyKind    = PropertyKind::Value;
+    propertyDefinition->serializer       = new NumberSerializer<PROP_T>();
+    propertyDefinition->_propertyKind    = PropertyKind::Number;
 
     return propertyDefinition;
 }
@@ -150,7 +150,7 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
     auto arraySerializer = new ArraySerializer<T, ELEM_T>;
     arraySerializer->arraySize         = collectionSizeFunction;
     arraySerializer->elementAccess     = elementAccessFunction;
-    arraySerializer->elementSerializer = new ValueSerializer<ELEM_T>();
+    arraySerializer->elementSerializer = new NumberSerializer<ELEM_T>();
 
     propertyDefinition->serializer     = arraySerializer;
 

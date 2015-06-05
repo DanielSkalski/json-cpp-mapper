@@ -23,5 +23,5 @@ HEADERS += \
     Serializer/ObjectSerializer.hpp \
     Serializer/SerializerFactory.h \
     Serializer/StringSerializer.hpp \
-    Serializer/ValueSerializer.hpp
+    Serializer/NumberSerializer.hpp
 
