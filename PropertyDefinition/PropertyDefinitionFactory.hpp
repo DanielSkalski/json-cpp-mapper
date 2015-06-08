@@ -10,7 +10,6 @@
 #include "Serializer/SerializerFactory.hpp"
 
 #include <functional>
-#include <sstream>
 #include <string>
 
 using namespace std;
@@ -21,40 +20,40 @@ class PropertyDefinitionFactory
     SerializerFactory m_serializerFactory;
 
 public:
-    PropertyDefinitionBase<T>* createPropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createPropertyDefinition
                                                     (const string &propertyName,
                                                      function<string (const T&)> valueFunction) const;
 
     template<typename PROP_T>
-    PropertyDefinitionBase<T>* createValuePropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createValuePropertyDefinition
                                                     (const string &propertyName,
                                                      function<PROP_T (const T&)> valueFunction) const;
 
     template<class PROP_T>
-    PropertyDefinitionBase<T>* createPropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createPropertyDefinition
                                                     (const string &propertyName,
                                                      function<PROP_T (const T&)> valueFunction,
                                                      const Mapping<PROP_T> &propertyTypeMapping) const;
 
     template<class ELEM_T>
-    PropertyDefinitionBase<T>* createArrayPropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
                                                     (const string& propertyName,
                                                      function<int (const T&)> collectionSizeFunction,
                                                      function<ELEM_T (const T&, int)> elementAccessFunction,
                                                      const Mapping<ELEM_T>& elementTypeMapping) const;
 
     template<typename ELEM_T>
-    PropertyDefinitionBase<T>* createArrayPropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
                                                     (const string& propertyName,
                                                      function<int (const T&)> collectionSizeFunction,
                                                      function<ELEM_T (const T&, int)> elementAccessFunction) const;
 
-    PropertyDefinitionBase<T>* createArrayPropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
                                                     (const string& propertyName,
                                                      function<int (const T&)> collectionSizeFunction,
                                                      function<string (const T&, int)> elementAccessFunction) const;
 
-    PropertyDefinitionBase<T>* createArrayPropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
                                                     (const string& propertyName,
                                                      function<int (const T&)> collectionSizeFunction,
                                                      function<string* (const T&, int)> elementAccessFunction,
@@ -65,34 +64,34 @@ public:
 // ----------------------------------------------------------------------------
 
 template<class T>
-PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createPropertyDefinition
-                                                        (const string &propertyName,
-                                                         function<string (const T&)> valueFunction) const
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createPropertyDefinition(const string &propertyName,
+                                                       function<string (const T&)> valueFunction) const
 {
     auto propertyDefinition = new PropertyDefinition<T, string>(propertyName, PropertyKind::String);
     propertyDefinition->m_getValueFunction = valueFunction;
     propertyDefinition->m_serializer       = m_serializerFactory.getStringSerializer();
 
-    return propertyDefinition;
+    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
 }
 
 template<class T>
 template<typename PROP_T>
-PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createValuePropertyDefinition
-                                                (const string &propertyName,
-                                                 function<PROP_T (const T&)> valueFunction) const
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createValuePropertyDefinition(const string &propertyName,
+                                                            function<PROP_T (const T&)> valueFunction) const
 {
     auto propertyDefinition = new PropertyDefinition<T, PROP_T>(propertyName, PropertyKind::Number);
     propertyDefinition->m_getValueFunction = valueFunction;
     propertyDefinition->m_serializer       = m_serializerFactory.getNumberSerializer<PROP_T>();
 
-    return propertyDefinition;
+    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
 }
 
 template<class T>
 template<class PROP_T>
-PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createPropertyDefinition
-                                                      (const string &propertyName,
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createPropertyDefinition(const string &propertyName,
                                                        function<PROP_T (const T &)> valueFunction,
                                                        const Mapping<PROP_T> &propertyTypeMapping) const
 {
@@ -101,17 +100,17 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createPropertyDefinitio
     propertyDefinition->m_propertyTypeMapping = propertyTypeMapping;
     propertyDefinition->m_serializer          = m_serializerFactory.getObjectSerializer(propertyTypeMapping);
 
-    return propertyDefinition;
+    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
 }
 
 
 template<class T>
 template<class ELEM_T>
-PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition
-                                                    (const string& propertyName,
-                                                     function<int (const T&)> collectionSizeFunction,
-                                                     function<ELEM_T (const T&, int)> elementAccessFunction,
-                                                     const Mapping<ELEM_T>& elementTypeMapping) const
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& propertyName,
+                                                            function<int (const T&)> collectionSizeFunction,
+                                                            function<ELEM_T (const T&, int)> elementAccessFunction,
+                                                            const Mapping<ELEM_T>& elementTypeMapping) const
 {
     auto elementSerializer = m_serializerFactory.getObjectSerializer(elementTypeMapping);
 
@@ -122,16 +121,16 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
                                                                                  collectionSizeFunction,
                                                                                  elementAccessFunction);
 
-    return propertyDefinition;
+    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
 }
 
 
 template<class T>
 template<class ELEM_T>
-PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition
-                                                    (const string& propertyName,
-                                                     function<int (const T&)> collectionSizeFunction,
-                                                     function<ELEM_T (const T&, int)> elementAccessFunction) const
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& propertyName,
+                                                            function<int (const T&)> collectionSizeFunction,
+                                                            function<ELEM_T (const T&, int)> elementAccessFunction) const
 {
     auto elementSerializer = m_serializerFactory.getNumberSerializer<ELEM_T>();
 
@@ -143,14 +142,14 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
                                                                         collectionSizeFunction,
                                                                         elementAccessFunction);
 
-    return propertyDefinition;
+    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
 }
 
 template<class T>
-PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition
-                                                    (const string& propertyName,
-                                                     function<int (const T&)> collectionSizeFunction,
-                                                     function<string (const T&, int)> elementAccessFunction) const
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createArrayPropertyDefinition (const string& propertyName,
+                                                             function<int (const T&)> collectionSizeFunction,
+                                                             function<string (const T&, int)> elementAccessFunction) const
 {
     auto elementSerializer = m_serializerFactory.getStringSerializer();
 
@@ -162,17 +161,17 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
                                                                             collectionSizeFunction,
                                                                             elementAccessFunction);
 
-    return propertyDefinition;
+    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
 }
 
 
 template<class T>
-PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefinition
-                                                (const string& propertyName,
-                                                 function<int (const T&)> collectionSizeFunction,
-                                                 function<string* (const T&, int)> elementAccessFunction,
-                                                 function<int (const string*)> innerCollectionSizeFunction,
-                                                 function<string (const string*, int)> innerElementAccessFunction) const
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& propertyName,
+                                                            function<int (const T&)> collectionSizeFunction,
+                                                            function<string* (const T&, int)> elementAccessFunction,
+                                                            function<int (const string*)> innerCollectionSizeFunction,
+                                                            function<string (const string*, int)> innerElementAccessFunction) const
 {
     auto innerSerializer = m_serializerFactory.getArraySerializer<string*, string>(
                                                         m_serializerFactory.getStringSerializer(),
@@ -189,7 +188,7 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
     propertyDefinition->m_elementAccess  = elementAccessFunction;
     propertyDefinition->m_serializer     = serializer;
 
-    return propertyDefinition;
+    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
 }
 
 #endif // PROPERTYDEFINITIONFACTORY_H

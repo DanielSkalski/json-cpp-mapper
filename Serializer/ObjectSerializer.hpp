@@ -43,7 +43,7 @@ string ObjectSerializer<T>::serialize(const T &value) const
 
     out << "{" << endl;
 
-    for (PropertyDefinitionBase<T>* prop : m_mapping.properties())
+    for (auto prop : m_mapping.properties())
     {
         string propValue = prop->serializeValue(value);
 
