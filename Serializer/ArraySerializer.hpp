@@ -10,9 +10,9 @@ class ArraySerializer : public ISerializer<OBJ_T>
 {
     friend class SerializerFactory;
 
-    explicit ArraySerializer(ISerializer<ELEMENT_T>* elementSerializer);
+    explicit ArraySerializer(shared_ptr< ISerializer<ELEMENT_T> > elementSerializer);
 
-    ISerializer<ELEMENT_T>* m_elementSerializer;
+    shared_ptr< ISerializer<ELEMENT_T> > m_elementSerializer;
     function<int (const OBJ_T&)> m_arraySize;
     function<ELEMENT_T (const OBJ_T&, int)> m_elementAccess;
 
@@ -27,7 +27,7 @@ public:
 // ---- CONSTRUCTORS ----------------------------------------------------------
 
 template<class OBJ_T, class ELEMENT_T>
-ArraySerializer<OBJ_T, ELEMENT_T>::ArraySerializer(ISerializer<ELEMENT_T>* elementSerializer)
+ArraySerializer<OBJ_T, ELEMENT_T>::ArraySerializer(shared_ptr< ISerializer<ELEMENT_T> > elementSerializer)
     : m_elementSerializer(elementSerializer)
 {
 }

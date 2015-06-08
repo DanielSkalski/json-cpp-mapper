@@ -11,7 +11,7 @@ class ArrayPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 
     explicit ArrayPropertyDefinition(const string& propertyName);
 
-    ISerializer<OBJ_T>* m_serializer;
+    shared_ptr< ISerializer<OBJ_T> > m_serializer;
 
     function<int (const OBJ_T&)> m_arraySize;
     function<ELEMENT_T (const OBJ_T&, int)> m_elementAccess;

@@ -16,7 +16,7 @@ class ObjectPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 
     explicit ObjectPropertyDefinition(const string& propertyName);
 
-    ISerializer<PROPERTY_T>* m_serializer;
+    shared_ptr< ISerializer<PROPERTY_T> > m_serializer;
 
     Mapping<PROPERTY_T> m_propertyTypeMapping;
     function<PROPERTY_T (const OBJ_T&)> m_getValueFunction;

@@ -18,15 +18,16 @@ public:
     ~SerializerFactory();
 
     template<typename NUM_T>
-    NumberSerializer<NUM_T>* getNumberSerializer() const;
+    shared_ptr< NumberSerializer<NUM_T> > getNumberSerializer() const;
 
-    StringSerializer* getStringSerializer() const;
+    shared_ptr< StringSerializer > getStringSerializer() const;
 
     template<class OBJ_T>
-    ObjectSerializer<OBJ_T>* getObjectSerializer(const Mapping<OBJ_T>& mapping) const;
+    shared_ptr< ObjectSerializer<OBJ_T> > getObjectSerializer(const Mapping<OBJ_T>& mapping) const;
 
     template<class OBJ_T, class ELEMENT_T>
-    ArraySerializer<OBJ_T, ELEMENT_T>* getArraySerializer(ISerializer<ELEMENT_T>* elementSerializer,
+    shared_ptr< ArraySerializer<OBJ_T, ELEMENT_T> > getArraySerializer(
+                                                          shared_ptr< ISerializer<ELEMENT_T> > elementSerializer,
                                                           function<int (const OBJ_T&)> collectionSizeFunction,
                                                           function<ELEMENT_T (const OBJ_T&, int)> elementAccessFunction) const;
 };
@@ -48,24 +49,25 @@ SerializerFactory::~SerializerFactory()
 // ----- METHODS --------------------------------------------------------------
 
 template<typename NUM_T>
-NumberSerializer<NUM_T>* SerializerFactory::getNumberSerializer() const
+shared_ptr< NumberSerializer<NUM_T> > SerializerFactory::getNumberSerializer() const
 {
-    return new NumberSerializer<NUM_T>();
+    return shared_ptr< NumberSerializer<NUM_T> >(new NumberSerializer<NUM_T>);
 }
 
-StringSerializer* SerializerFactory::getStringSerializer() const
+shared_ptr<StringSerializer> SerializerFactory::getStringSerializer() const
 {
-    return new StringSerializer();
+    return shared_ptr<StringSerializer>(new StringSerializer);
 }
 
 template<class OBJ_T>
-ObjectSerializer<OBJ_T>* SerializerFactory::getObjectSerializer(const Mapping<OBJ_T>& mapping) const
+shared_ptr< ObjectSerializer<OBJ_T> > SerializerFactory::getObjectSerializer(const Mapping<OBJ_T>& mapping) const
 {
-    return new ObjectSerializer<OBJ_T>(mapping);
+    return shared_ptr< ObjectSerializer<OBJ_T> >(new ObjectSerializer<OBJ_T>(mapping));
 }
 
 template<class OBJ_T, class ELEMENT_T>
-ArraySerializer<OBJ_T, ELEMENT_T>* SerializerFactory::getArraySerializer(ISerializer<ELEMENT_T>* elementSerializer,
+shared_ptr< ArraySerializer<OBJ_T, ELEMENT_T> > SerializerFactory::getArraySerializer(
+                                                       shared_ptr< ISerializer<ELEMENT_T> > elementSerializer,
                                                        function<int (const OBJ_T&)> collectionSizeFunction,
                                                        function<ELEMENT_T (const OBJ_T&, int)> elementAccessFunction) const
 {
@@ -73,7 +75,7 @@ ArraySerializer<OBJ_T, ELEMENT_T>* SerializerFactory::getArraySerializer(ISerial
     serializer->m_arraySize     = collectionSizeFunction;
     serializer->m_elementAccess = elementAccessFunction;
 
-    return serializer;
+    return shared_ptr< ArraySerializer<OBJ_T, ELEMENT_T> >(serializer);
 }
 
 #endif // SERIALIZERFACTORY_H

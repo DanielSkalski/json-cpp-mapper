@@ -12,7 +12,7 @@ class PropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 
 
     PropertyKind m_propertyKind;
-    ISerializer<PROPERTY_T>* m_serializer;
+    shared_ptr< ISerializer<PROPERTY_T> > m_serializer;
     function<PROPERTY_T (const OBJ_T&)> m_getValueFunction;
 
 public:

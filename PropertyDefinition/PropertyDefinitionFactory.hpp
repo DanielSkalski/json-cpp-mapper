@@ -118,7 +118,7 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
     auto propertyDefinition = new ArrayPropertyDefinition<T, ELEM_T>(propertyName);
     propertyDefinition->m_arraySize     = collectionSizeFunction;
     propertyDefinition->m_elementAccess = elementAccessFunction;
-    propertyDefinition->m_serializer    = m_serializerFactory.getArraySerializer(elementSerializer,
+    propertyDefinition->m_serializer    = m_serializerFactory.getArraySerializer<T, ELEM_T>(elementSerializer,
                                                                                  collectionSizeFunction,
                                                                                  elementAccessFunction);
 
@@ -138,9 +138,10 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
     auto propertyDefinition = new ArrayPropertyDefinition<T, ELEM_T>(propertyName);
     propertyDefinition->m_arraySize      = collectionSizeFunction;
     propertyDefinition->m_elementAccess  = elementAccessFunction;
-    propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer(elementSerializer,
-                                                                                  collectionSizeFunction,
-                                                                                  elementAccessFunction);
+    propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer<T, ELEM_T>(
+                                                                        elementSerializer,
+                                                                        collectionSizeFunction,
+                                                                        elementAccessFunction);
 
     return propertyDefinition;
 }
@@ -156,9 +157,10 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
     auto propertyDefinition = new ArrayPropertyDefinition<T, string>(propertyName);
     propertyDefinition->m_arraySize      = collectionSizeFunction;
     propertyDefinition->m_elementAccess  = elementAccessFunction;
-    propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer(elementSerializer,
-                                                                                  collectionSizeFunction,
-                                                                                  elementAccessFunction);
+    propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer<T, string>(
+                                                                            elementSerializer,
+                                                                            collectionSizeFunction,
+                                                                            elementAccessFunction);
 
     return propertyDefinition;
 }
@@ -172,13 +174,15 @@ PropertyDefinitionBase<T>* PropertyDefinitionFactory<T>::createArrayPropertyDefi
                                                  function<int (const string*)> innerCollectionSizeFunction,
                                                  function<string (const string*, int)> innerElementAccessFunction) const
 {
-    auto innerSerializer = m_serializerFactory.getArraySerializer<string*, string>(m_serializerFactory.getStringSerializer(),
-                                                                  innerCollectionSizeFunction,
-                                                                  innerElementAccessFunction);
+    auto innerSerializer = m_serializerFactory.getArraySerializer<string*, string>(
+                                                        m_serializerFactory.getStringSerializer(),
+                                                        innerCollectionSizeFunction,
+                                                        innerElementAccessFunction);
 
-    auto serializer = m_serializerFactory.getArraySerializer(innerSerializer,
-                                                             collectionSizeFunction,
-                                                             elementAccessFunction);
+    auto serializer = m_serializerFactory.getArraySerializer<T, string*>(
+                                                        innerSerializer,
+                                                        collectionSizeFunction,
+                                                        elementAccessFunction);
 
     auto propertyDefinition = new ArrayPropertyDefinition<T, string*>(propertyName);
     propertyDefinition->m_arraySize      = collectionSizeFunction;
