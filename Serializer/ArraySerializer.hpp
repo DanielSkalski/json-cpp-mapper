@@ -1,33 +1,38 @@
 #ifndef ARRAYSERIALIZER_H
 #define ARRAYSERIALIZER_H
 
-#include "ISerializer.h"
+#include "SerializerCommon.h"
 #include <functional>
+
 
 template<class OBJ_T, class ELEMENT_T>
 class ArraySerializer : public ISerializer<OBJ_T>
 {
+    friend class SerializerFactory;
+
+    explicit ArraySerializer(ISerializer<ELEMENT_T>* elementSerializer);
+
+    ISerializer<ELEMENT_T>* m_elementSerializer;
+    function<int (const OBJ_T&)> m_arraySize;
+    function<ELEMENT_T (const OBJ_T&, int)> m_elementAccess;
+
 public:
-    ArraySerializer()
-    {
-
-    }
-
-    explicit ArraySerializer(ISerializer<ELEMENT_T>* elementSerializer)
-    {
-        this->elementSerializer = elementSerializer;
-    }
-
     virtual ~ArraySerializer() {}
-
-    ISerializer<ELEMENT_T>* elementSerializer;
-    function<int (const OBJ_T&)> arraySize;
-    function<ELEMENT_T (const OBJ_T&, int)> elementAccess;
 
     string serialize(const OBJ_T &obj) const override;
 };
 
 // ----------------------------------------------------------------------------
+
+// ---- CONSTRUCTORS ----------------------------------------------------------
+
+template<class OBJ_T, class ELEMENT_T>
+ArraySerializer<OBJ_T, ELEMENT_T>::ArraySerializer(ISerializer<ELEMENT_T>* elementSerializer)
+    : m_elementSerializer(elementSerializer)
+{
+}
+
+// ----- METHODS --------------------------------------------------------------
 
 template<class OBJ_T, class ELEMENT_T>
 string ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj) const
@@ -36,16 +41,16 @@ string ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj) const
 
     out << "[" << endl;
 
-    for (int i = 0; i < arraySize(obj); i++)
+    for (int i = 0; i < m_arraySize(obj); i++)
     {
-        ELEMENT_T value = elementAccess(obj, i);
+        ELEMENT_T value = m_elementAccess(obj, i);
 
-        string serializedValue = elementSerializer->serialize(value);
+        string serializedValue = m_elementSerializer->serialize(value);
 
         out << serializedValue << "," << endl;
     }
 
-    if (arraySize(obj) > 0)
+    if (m_arraySize(obj) > 0)
     {
         // remove last "," sign
         out.seekp(-2, out.cur);

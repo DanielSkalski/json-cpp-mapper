@@ -1,26 +1,23 @@
 #ifndef ARRAYPROPERTYDEFINITION_H
 #define ARRAYPROPERTYDEFINITION_H
 
-#include "PropertyDefinitionBase.h"
-#include "Mapping.hpp"
-
-#include <functional>
-#include <sstream>
-#include <string>
-
-using namespace std;
+#include "PropertyDefinitionCommon.h"
 
 
 template<class OBJ_T, class ELEMENT_T>
 class ArrayPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 {
+    friend class PropertyDefinitionFactory<OBJ_T>;
+
+    explicit ArrayPropertyDefinition(const string& propertyName);
+
+    ISerializer<OBJ_T>* m_serializer;
+
+    function<int (const OBJ_T&)> m_arraySize;
+    function<ELEMENT_T (const OBJ_T&, int)> m_elementAccess;
+
 public:
     virtual ~ArrayPropertyDefinition() { }
-
-    ISerializer<OBJ_T>* serializer;
-
-    function<int (const OBJ_T&)> arraySize;
-    function<ELEMENT_T (const OBJ_T&, int)> elementAccess;
 
     string serializeValue(const OBJ_T &obj) const override;
 
@@ -30,10 +27,20 @@ public:
 
 // ----------------------------------------------------------------------------
 
+// ---- CONSTRUCTORS ----------------------------------------------------------
+
+template<class OBJ_T, class ELEMENT_T>
+ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::ArrayPropertyDefinition(const string& propertyName)
+    : PropertyDefinitionBase<OBJ_T>(propertyName)
+{
+}
+
+// ----- METHODS --------------------------------------------------------------
+
 template<class OBJ_T, class ELEMENT_T>
 string ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::serializeValue(const OBJ_T &obj) const
 {
-    return serializer->serialize(obj);
+    return m_serializer->serialize(obj);
 }
 
 template<class OBJ_T, class ELEMENT_T>

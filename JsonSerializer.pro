@@ -4,8 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c++11
 
-SOURCES += main.cpp \
-    Serializer/SerializerFactory.cpp
+SOURCES += main.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -21,7 +20,9 @@ HEADERS += \
     Mapping.hpp \
     Serializer/ArraySerializer.hpp \
     Serializer/ObjectSerializer.hpp \
-    Serializer/SerializerFactory.h \
     Serializer/StringSerializer.hpp \
-    Serializer/NumberSerializer.hpp
+    Serializer/NumberSerializer.hpp \
+    PropertyDefinition/PropertyDefinitionCommon.h \
+    Serializer/SerializerFactory.hpp \
+    Serializer/SerializerCommon.h
 

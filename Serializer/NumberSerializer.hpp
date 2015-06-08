@@ -1,12 +1,16 @@
 #ifndef VALUESERIALIZER_H
 #define VALUESERIALIZER_H
 
-#include "ISerializer.h"
-#include <string>
+#include "SerializerCommon.h"
+
 
 template<class T>
 class NumberSerializer : public ISerializer<T>
 {
+    friend class SerializerFactory;
+
+    NumberSerializer() { }
+
 public:
     virtual ~NumberSerializer() { }
 

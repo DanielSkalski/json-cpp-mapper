@@ -1,12 +1,15 @@
 #ifndef STRINGSERIALIZER_H
 #define STRINGSERIALIZER_H
 
-#include "ISerializer.h"
-#include <sstream>
+#include "SerializerCommon.h"
 
 
 class StringSerializer : public ISerializer<string>
 {
+    friend class SerializerFactory;
+
+    StringSerializer() { }
+
 public:
     virtual ~StringSerializer() { }
 

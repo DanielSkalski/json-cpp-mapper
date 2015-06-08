@@ -1,8 +1,9 @@
 #ifndef OBJECTSERIALIZER_H
 #define OBJECTSERIALIZER_H
 
-#include "ISerializer.h"
+#include "SerializerCommon.h"
 #include "Mapping.hpp"
+
 
 template<class T>
 class Mapping;
@@ -10,13 +11,13 @@ class Mapping;
 template<class T>
 class ObjectSerializer : public ISerializer<T>
 {
-    Mapping<T> mapping;
+    friend class SerializerFactory;
+
+    explicit ObjectSerializer(const Mapping<T>& mapping);
+
+    Mapping<T> m_mapping;
 
 public:
-    explicit ObjectSerializer(const Mapping<T>& mapping)
-    {
-        this->mapping = mapping;
-    }
 
     virtual ~ObjectSerializer() { }
 
@@ -25,6 +26,16 @@ public:
 
 // ----------------------------------------------------------------------------
 
+// ---- CONSTRUCTORS ----------------------------------------------------------
+
+template<class T>
+ObjectSerializer<T>::ObjectSerializer(const Mapping<T>& mapping)
+    : m_mapping(mapping)
+{
+}
+
+// ----- METHODS --------------------------------------------------------------
+
 template<class T>
 string ObjectSerializer<T>::serialize(const T &value) const
 {
@@ -32,15 +43,15 @@ string ObjectSerializer<T>::serialize(const T &value) const
 
     out << "{" << endl;
 
-    for (PropertyDefinitionBase<T>* prop : mapping.m_properties)
+    for (PropertyDefinitionBase<T>* prop : m_mapping.properties())
     {
         string propValue = prop->serializeValue(value);
 
-        out << "\"" << prop->propertyName << "\" : " << propValue << "," << endl;
+        out << "\"" << prop->propertyName() << "\" : " << propValue << "," << endl;
     }
 
     // Remove last ',' sign.
-    if (mapping.m_properties.size() > 0)
+    if (m_mapping.properties().size() > 0)
     {
         out.seekp(-2, out.cur);
     }

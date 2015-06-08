@@ -1,15 +1,9 @@
 #ifndef OBJECTPROPERTYDEFINITION_H
 #define OBJECTPROPERTYDEFINITION_H
 
-#include "PropertyDefinitionBase.h"
-#include "Serializer/ISerializer.h"
+#include "PropertyDefinitionCommon.h"
+
 #include "Serializer/ObjectSerializer.hpp"
-
-#include <functional>
-#include <sstream>
-#include <string>
-
-using namespace std;
 
 
 template<class T>
@@ -18,13 +12,17 @@ class Mapping;
 template<class OBJ_T, class PROPERTY_T>
 class ObjectPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 {
+    friend class PropertyDefinitionFactory<OBJ_T>;
+
+    explicit ObjectPropertyDefinition(const string& propertyName);
+
+    ISerializer<PROPERTY_T>* m_serializer;
+
+    Mapping<PROPERTY_T> m_propertyTypeMapping;
+    function<PROPERTY_T (const OBJ_T&)> m_getValueFunction;
+
 public:
     virtual ~ObjectPropertyDefinition() { }
-
-    ISerializer<PROPERTY_T>* serializer;
-
-    Mapping<PROPERTY_T> propertyTypeMapping;
-    function<PROPERTY_T (const OBJ_T&)> getValueFunction;
 
     string serializeValue(const OBJ_T& obj) const override;
 
@@ -33,14 +31,25 @@ public:
 
 // ----------------------------------------------------------------------------
 
+// ---- CONSTRUCTORS ----------------------------------------------------------
+
+template<class OBJ_T, class PROPERTY_T>
+ObjectPropertyDefinition<OBJ_T, PROPERTY_T>::ObjectPropertyDefinition(const string& propertyName)
+    : PropertyDefinitionBase<OBJ_T>(propertyName)
+{
+
+}
+
+// ----- METHODS --------------------------------------------------------------
+
 template<class OBJ_T, class PROPERTY_T>
 string ObjectPropertyDefinition<OBJ_T, PROPERTY_T>::serializeValue(const OBJ_T &obj) const
 {
     stringstream out;
 
-    PROPERTY_T value = getValueFunction(obj);
+    PROPERTY_T value = m_getValueFunction(obj);
 
-    string serializedValue = serializer->serialize(value);
+    string serializedValue = m_serializer->serialize(value);
 
     out << serializedValue;
 

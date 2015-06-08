@@ -16,12 +16,13 @@ template<class T>
 class Mapping
 {
     PropertyDefinitionFactory<T> m_propertyDefinitionFactory;
-
-public:
     list< PropertyDefinitionBase<T>* > m_properties;
 
+public:
     Mapping();
     virtual ~Mapping();
+
+    list< PropertyDefinitionBase<T>* > properties() const;
 
     void map(const string&               propertyName,
              function<string (const T&)> valueFunction);
@@ -62,11 +63,11 @@ public:
 
 // ----------------------------------------------------------------------------
 
+// ---- CONSTRUCTORS ----------------------------------------------------------
 
 template<class T>
 Mapping<T>::Mapping()
 {
-
 }
 
 template<class T>
@@ -76,6 +77,14 @@ Mapping<T>::~Mapping()
     {
         delete prop;
     }
+}
+
+// ----- METHODS --------------------------------------------------------------
+
+template<class T>
+list< PropertyDefinitionBase<T>* > Mapping<T>::properties() const
+{
+    return m_properties;
 }
 
 template<class T>

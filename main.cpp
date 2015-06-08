@@ -64,6 +64,8 @@ struct StringsMultiArray
 
 int main()
 {
+    SerializerFactory serializerFactory;
+
     Book book {"Czarodziciel", "Terry Pratchett", 20.5};
     Book book2 {"Kolor magii", "Terry Pratchett", 23.5};
     Book book3 {"Miecz przeznaczenia", "Andrzej Sapkowski", 33.0f};
@@ -76,9 +78,9 @@ int main()
     bookMapping.map("Author", JSON_VALUE_FUNC(Book, author));
     bookMapping.map<float>("Price", JSON_VALUE_FUNC_FLOAT(Book, something));
 
-    ObjectSerializer<Book> bookSerializer(bookMapping);
+    auto bookSerializer = serializerFactory.getObjectSerializer<Book>(bookMapping);
 
-    cout << bookSerializer.serialize(book);
+    cout << bookSerializer->serialize(book);
 
     Mapping<A> aMapping;
     aMapping.map("name", JSON_VALUE_FUNC(A, name));
@@ -86,9 +88,9 @@ int main()
     aMapping.map<int>("number", JSON_VALUE_FUNC_INT(A, number));
     aMapping.map<Book>("book", [](const A& x) -> Book { return x.book; }, bookMapping);
 
-    ObjectSerializer<A> aSerializer(aMapping);
+    auto aSerializer = serializerFactory.getObjectSerializer<A>(aMapping);
 
-    cout << aSerializer.serialize(a);
+    cout << aSerializer->serialize(a);
 
     Mapping<Shelf> shelfMapping;
     shelfMapping.map("name", JSON_VALUE_FUNC(Shelf, name));
@@ -98,9 +100,9 @@ int main()
                                      [](const Shelf& x, int index) -> Book { return x.books[index]; },
                                      bookMapping);
 
-    ObjectSerializer<Shelf> shelfSerializer(shelfMapping);
+    auto shelfSerializer = serializerFactory.getObjectSerializer<Shelf>(shelfMapping);
 
-    cout << shelfSerializer.serialize(shelf);
+    cout << shelfSerializer->serialize(shelf);
 
     NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
     Mapping<NumbersCollection> numbersMapping;
@@ -110,9 +112,9 @@ int main()
                                     [](const NumbersCollection& x) -> int { return x.count; },
                                     [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
 
-    ObjectSerializer<NumbersCollection> numbersSerializer(numbersMapping);
+    auto numbersSerializer = serializerFactory.getObjectSerializer<NumbersCollection>(numbersMapping);
 
-    cout << numbersSerializer.serialize(numbers);
+    cout << numbersSerializer->serialize(numbers);
 
     StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
     Mapping<StringsCollection> stringsMapping;
@@ -121,9 +123,9 @@ int main()
                                      [](const StringsCollection& x) -> int { return x.count; },
                                      [](const StringsCollection& x, int index) -> string { return x.values[index]; });
 
-    ObjectSerializer<StringsCollection> stringsSerializer(stringsMapping);
+    auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
 
-    cout << stringsSerializer.serialize(strings);
+    cout << stringsSerializer->serialize(strings);
 
 
     StringsMultiArray multiStrings
@@ -144,8 +146,8 @@ int main()
                                    [](const string* x, int index) -> string { return x[index]; });
 
 
-    ObjectSerializer<StringsMultiArray> multiStringsSerializer(multiStringsMapping);
-    cout << multiStringsSerializer.serialize(multiStrings);
+    auto multiStringsSerializer = serializerFactory.getObjectSerializer<StringsMultiArray>(multiStringsMapping);
+    cout << multiStringsSerializer->serialize(multiStrings);
 
     return 0;
 }
