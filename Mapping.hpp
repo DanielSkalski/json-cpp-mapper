@@ -22,7 +22,7 @@ public:
     Mapping();
     virtual ~Mapping();
 
-    list< shared_ptr< PropertyDefinitionBase<T> > > properties() const;
+    const list< shared_ptr< PropertyDefinitionBase<T> > >& properties() const;
 
     void map(const string&               propertyName,
              function<string (const T&)> valueFunction);
@@ -78,7 +78,7 @@ Mapping<T>::~Mapping()
 // ----- METHODS --------------------------------------------------------------
 
 template<class T>
-list<shared_ptr<PropertyDefinitionBase<T> > > Mapping<T>::properties() const
+const list<shared_ptr<PropertyDefinitionBase<T> > >& Mapping<T>::properties() const
 {
     return m_properties;
 }

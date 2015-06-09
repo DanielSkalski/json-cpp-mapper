@@ -12,13 +12,17 @@ template<class T>
 class ObjectSerializer : public ISerializer<T>
 {
     friend class SerializerFactory;
+    struct private_ctor { };
 
-    explicit ObjectSerializer(const Mapping<T>& mapping);
+    static shared_ptr<ObjectSerializer<T>> make_shared(const Mapping<T>& mapping)
+    {
+        return std::make_shared<ObjectSerializer<T>>(private_ctor(), mapping);
+    }
 
     Mapping<T> m_mapping;
 
 public:
-
+    ObjectSerializer(const private_ctor&, const Mapping<T>& mapping);
     virtual ~ObjectSerializer() { }
 
     string serialize(const T& value) const override;
@@ -29,7 +33,7 @@ public:
 // ---- CONSTRUCTORS ----------------------------------------------------------
 
 template<class T>
-ObjectSerializer<T>::ObjectSerializer(const Mapping<T>& mapping)
+ObjectSerializer<T>::ObjectSerializer(const private_ctor&, const Mapping<T>& mapping)
     : m_mapping(mapping)
 {
 }

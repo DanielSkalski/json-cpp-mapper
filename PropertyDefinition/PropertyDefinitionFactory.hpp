@@ -68,11 +68,11 @@ shared_ptr< PropertyDefinitionBase<T> >
 PropertyDefinitionFactory<T>::createPropertyDefinition(const string &propertyName,
                                                        function<string (const T&)> valueFunction) const
 {
-    auto propertyDefinition = new PropertyDefinition<T, string>(propertyName, PropertyKind::String);
+    auto propertyDefinition = PropertyDefinition<T, string>::make_shared(propertyName, PropertyKind::String);
     propertyDefinition->m_getValueFunction = valueFunction;
     propertyDefinition->m_serializer       = m_serializerFactory.getStringSerializer();
 
-    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
+    return propertyDefinition;
 }
 
 template<class T>
@@ -81,11 +81,11 @@ shared_ptr< PropertyDefinitionBase<T> >
 PropertyDefinitionFactory<T>::createValuePropertyDefinition(const string &propertyName,
                                                             function<PROP_T (const T&)> valueFunction) const
 {
-    auto propertyDefinition = new PropertyDefinition<T, PROP_T>(propertyName, PropertyKind::Number);
+    auto propertyDefinition = PropertyDefinition<T, PROP_T>::make_shared(propertyName, PropertyKind::Number);
     propertyDefinition->m_getValueFunction = valueFunction;
     propertyDefinition->m_serializer       = m_serializerFactory.getNumberSerializer<PROP_T>();
 
-    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
+    return propertyDefinition;
 }
 
 template<class T>
@@ -95,12 +95,12 @@ PropertyDefinitionFactory<T>::createPropertyDefinition(const string &propertyNam
                                                        function<PROP_T (const T &)> valueFunction,
                                                        const Mapping<PROP_T> &propertyTypeMapping) const
 {
-    auto propertyDefinition = new ObjectPropertyDefinition<T, PROP_T>(propertyName);
+    auto propertyDefinition = ObjectPropertyDefinition<T, PROP_T>::make_shared(propertyName);
     propertyDefinition->m_getValueFunction    = valueFunction;
     propertyDefinition->m_propertyTypeMapping = propertyTypeMapping;
     propertyDefinition->m_serializer          = m_serializerFactory.getObjectSerializer(propertyTypeMapping);
 
-    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
+    return propertyDefinition;
 }
 
 
@@ -114,14 +114,14 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& proper
 {
     auto elementSerializer = m_serializerFactory.getObjectSerializer(elementTypeMapping);
 
-    auto propertyDefinition = new ArrayPropertyDefinition<T, ELEM_T>(propertyName);
+    auto propertyDefinition = ArrayPropertyDefinition<T, ELEM_T>::make_shared(propertyName);
     propertyDefinition->m_arraySize     = collectionSizeFunction;
     propertyDefinition->m_elementAccess = elementAccessFunction;
     propertyDefinition->m_serializer    = m_serializerFactory.getArraySerializer<T, ELEM_T>(elementSerializer,
                                                                                  collectionSizeFunction,
                                                                                  elementAccessFunction);
 
-    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
+    return propertyDefinition;
 }
 
 
@@ -134,7 +134,7 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& proper
 {
     auto elementSerializer = m_serializerFactory.getNumberSerializer<ELEM_T>();
 
-    auto propertyDefinition = new ArrayPropertyDefinition<T, ELEM_T>(propertyName);
+    auto propertyDefinition = ArrayPropertyDefinition<T, ELEM_T>::make_shared(propertyName);
     propertyDefinition->m_arraySize      = collectionSizeFunction;
     propertyDefinition->m_elementAccess  = elementAccessFunction;
     propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer<T, ELEM_T>(
@@ -142,7 +142,7 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& proper
                                                                         collectionSizeFunction,
                                                                         elementAccessFunction);
 
-    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
+    return propertyDefinition;
 }
 
 template<class T>
@@ -153,7 +153,7 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition (const string& prope
 {
     auto elementSerializer = m_serializerFactory.getStringSerializer();
 
-    auto propertyDefinition = new ArrayPropertyDefinition<T, string>(propertyName);
+    auto propertyDefinition = ArrayPropertyDefinition<T, string>::make_shared(propertyName);
     propertyDefinition->m_arraySize      = collectionSizeFunction;
     propertyDefinition->m_elementAccess  = elementAccessFunction;
     propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer<T, string>(
@@ -161,7 +161,7 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition (const string& prope
                                                                             collectionSizeFunction,
                                                                             elementAccessFunction);
 
-    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
+    return propertyDefinition;
 }
 
 
@@ -183,12 +183,12 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& proper
                                                         collectionSizeFunction,
                                                         elementAccessFunction);
 
-    auto propertyDefinition = new ArrayPropertyDefinition<T, string*>(propertyName);
+    auto propertyDefinition = ArrayPropertyDefinition<T, string*>::make_shared(propertyName);
     propertyDefinition->m_arraySize      = collectionSizeFunction;
     propertyDefinition->m_elementAccess  = elementAccessFunction;
     propertyDefinition->m_serializer     = serializer;
 
-    return shared_ptr< PropertyDefinitionBase<T> >(propertyDefinition);
+    return propertyDefinition;
 }
 
 #endif // PROPERTYDEFINITIONFACTORY_H

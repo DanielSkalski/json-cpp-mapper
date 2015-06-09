@@ -8,10 +8,17 @@ template<class T>
 class NumberSerializer : public ISerializer<T>
 {
     friend class SerializerFactory;
+    struct private_ctor { };
 
     NumberSerializer() { }
 
+    static shared_ptr<NumberSerializer<T>> make_shared()
+    {
+        return std::make_shared<NumberSerializer<T>>(private_ctor());
+    }
+
 public:
+    explicit NumberSerializer(const private_ctor&) {}
     virtual ~NumberSerializer() { }
 
     string serialize(const T &value) const override;

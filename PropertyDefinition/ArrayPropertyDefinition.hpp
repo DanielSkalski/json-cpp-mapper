@@ -8,8 +8,12 @@ template<class OBJ_T, class ELEMENT_T>
 class ArrayPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 {
     friend class PropertyDefinitionFactory<OBJ_T>;
+    struct private_ctor { };
 
-    explicit ArrayPropertyDefinition(const string& propertyName);
+    static shared_ptr<ArrayPropertyDefinition<OBJ_T, ELEMENT_T>> make_shared(const string& propertyName)
+    {
+        return std::make_shared<ArrayPropertyDefinition<OBJ_T, ELEMENT_T>>(private_ctor(), propertyName);
+    }
 
     shared_ptr< ISerializer<OBJ_T> > m_serializer;
 
@@ -17,6 +21,7 @@ class ArrayPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
     function<ELEMENT_T (const OBJ_T&, int)> m_elementAccess;
 
 public:
+    ArrayPropertyDefinition(const private_ctor&, const string& propertyName);
     virtual ~ArrayPropertyDefinition() { }
 
     string serializeValue(const OBJ_T &obj) const override;
@@ -30,7 +35,8 @@ public:
 // ---- CONSTRUCTORS ----------------------------------------------------------
 
 template<class OBJ_T, class ELEMENT_T>
-ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::ArrayPropertyDefinition(const string& propertyName)
+ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::ArrayPropertyDefinition(const private_ctor &,
+                                                                   const string& propertyName)
     : PropertyDefinitionBase<OBJ_T>(propertyName)
 {
 }

@@ -9,14 +9,20 @@ template<class OBJ_T, class ELEMENT_T>
 class ArraySerializer : public ISerializer<OBJ_T>
 {
     friend class SerializerFactory;
+    struct private_ctor { };
 
-    explicit ArraySerializer(shared_ptr< ISerializer<ELEMENT_T> > elementSerializer);
+    static shared_ptr<ArraySerializer<OBJ_T, ELEMENT_T>> make_shared(
+            shared_ptr<ISerializer<ELEMENT_T>>& elementSerializer)
+    {
+        return std::make_shared<ArraySerializer<OBJ_T, ELEMENT_T>>(private_ctor(), elementSerializer);
+    }
 
     shared_ptr< ISerializer<ELEMENT_T> > m_elementSerializer;
     function<int (const OBJ_T&)> m_arraySize;
     function<ELEMENT_T (const OBJ_T&, int)> m_elementAccess;
 
 public:
+    ArraySerializer(const private_ctor&, shared_ptr< ISerializer<ELEMENT_T> >& elementSerializer);
     virtual ~ArraySerializer() {}
 
     string serialize(const OBJ_T &obj) const override;
@@ -27,7 +33,8 @@ public:
 // ---- CONSTRUCTORS ----------------------------------------------------------
 
 template<class OBJ_T, class ELEMENT_T>
-ArraySerializer<OBJ_T, ELEMENT_T>::ArraySerializer(shared_ptr< ISerializer<ELEMENT_T> > elementSerializer)
+ArraySerializer<OBJ_T, ELEMENT_T>::ArraySerializer(const private_ctor &,
+                                                   shared_ptr< ISerializer<ELEMENT_T> >& elementSerializer)
     : m_elementSerializer(elementSerializer)
 {
 }

@@ -7,15 +7,22 @@ template<class OBJ_T, class PROPERTY_T>
 class PropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 {
     friend class PropertyDefinitionFactory<OBJ_T>;
+    struct private_ctor { };
 
-    explicit PropertyDefinition(const string& propertyName, PropertyKind propertyKind = PropertyKind::String);
-
+    static shared_ptr<PropertyDefinition<OBJ_T, PROPERTY_T>> make_shared(const string& propertyName,
+                                                                         PropertyKind propertyKind = PropertyKind::String)
+    {
+        return std::make_shared<PropertyDefinition<OBJ_T, PROPERTY_T>>(private_ctor(),
+                                                                       propertyName,
+                                                                       propertyKind);
+    }
 
     PropertyKind m_propertyKind;
     shared_ptr< ISerializer<PROPERTY_T> > m_serializer;
     function<PROPERTY_T (const OBJ_T&)> m_getValueFunction;
 
 public:
+    PropertyDefinition(const private_ctor&, const string& propertyName, PropertyKind propertyKind = PropertyKind::String);
     virtual ~PropertyDefinition() { }
 
     string serializeValue(const OBJ_T& obj) const override;
@@ -28,7 +35,9 @@ public:
 // ---- CONSTRUCTORS ----------------------------------------------------------
 
 template<class OBJ_T, class PROPERTY_T>
-PropertyDefinition<OBJ_T, PROPERTY_T>::PropertyDefinition(const string& propertyName, PropertyKind propertyKind)
+PropertyDefinition<OBJ_T, PROPERTY_T>::PropertyDefinition(const private_ctor&,
+                                                          const string& propertyName,
+                                                          PropertyKind propertyKind)
     : PropertyDefinitionBase<OBJ_T>(propertyName), m_propertyKind(propertyKind)
 {
 }
