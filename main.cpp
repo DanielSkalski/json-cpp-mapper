@@ -77,7 +77,7 @@ int main()
     Shelf shelf {"Fantastyka", 23, books};
 
     Mapping<Book> bookMapping;
-    bookMapping.map("Title", JSON_VALUE_FUNC(Book, title));
+    bookMapping.map("Title")->asString(JSON_VALUE_FUNC(Book, title));
     bookMapping.map("Author", JSON_VALUE_FUNC(Book, author));
     bookMapping.map<float>("Price", JSON_VALUE_FUNC_FLOAT(Book, something));
     bookMapping.map("is_new", JSON_VALUE_FUNC_BOOL(Book, is_new));

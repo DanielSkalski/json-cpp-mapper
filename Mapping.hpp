@@ -3,8 +3,11 @@
 
 #include "PropertyDefinition/PropertyDefinition.hpp"
 #include "PropertyDefinition/PropertyDefinitionFactory.hpp"
+#include "MappingBuild/MappingBuilder.hpp"
+#include "MappingBuild/MappingPropertyKindChooser.hpp"
 
 #include <functional>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <list>
@@ -16,14 +19,18 @@ namespace mapper {
 template<class T>
 class Mapping
 {
+    friend class MappingBuilder<T>;
+
     PropertyDefinitionFactory<T> m_propertyDefinitionFactory;
-    list< shared_ptr< PropertyDefinitionBase<T> > > m_properties;
+    list<shared_ptr<PropertyDefinitionBase<T>>> m_properties;
 
 public:
     Mapping();
     virtual ~Mapping();
 
     const list< shared_ptr< PropertyDefinitionBase<T> > >& properties() const;
+
+    unique_ptr<MappingPropertyKindChooser<T>> map(const string& propertyName);
 
     void map(const string&               propertyName,
              function<string (const T&)> valueFunction);
@@ -85,6 +92,14 @@ template<class T>
 const list<shared_ptr<PropertyDefinitionBase<T> > >& Mapping<T>::properties() const
 {
     return m_properties;
+}
+
+template<class T>
+unique_ptr<MappingPropertyKindChooser<T>> Mapping<T>::map(const string &propertyName)
+{
+    auto mb = unique_ptr<MappingBuilder<T>>(new MappingBuilder<T>(this));
+
+    return mb->map(propertyName);
 }
 
 template<class T>

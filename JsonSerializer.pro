@@ -25,5 +25,7 @@ HEADERS += \
     PropertyDefinition/PropertyDefinitionCommon.h \
     Serializer/SerializerFactory.hpp \
     Serializer/SerializerCommon.h \
-    Serializer/BooleanSerializer.hpp
+    Serializer/BooleanSerializer.hpp \
+    MappingBuild/MappingBuilder.hpp \
+    MappingBuild/MappingPropertyKindChooser.hpp
 
