@@ -33,6 +33,8 @@ public:
 
 private:
     void mapAsString(function<string (const T&)> getFunc);
+
+    void mapAsBoolean(function<bool (const T&)> getFunc);
 };
 
 
@@ -59,6 +61,14 @@ unique_ptr<MappingPropertyKindChooser<T>> MappingBuilder<T>::map(const string &p
 
 template<class T>
 void MappingBuilder<T>::mapAsString(function<string (const T&)> getFunc)
+{
+    auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
+
+    m_mapping->m_properties.push_back(propDef);
+}
+
+template<class T>
+void MappingBuilder<T>::mapAsBoolean(function<bool (const T&)> getFunc)
 {
     auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
 

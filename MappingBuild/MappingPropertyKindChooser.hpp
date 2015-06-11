@@ -18,9 +18,9 @@ public:
 
     void asString(function<string (const T&)> getFunc);
 
-//    void asNumber(function<int (const T&)> getFunc);
+    void asBoolean(function<bool (const T&)> getFunc);
 
-//    void asBoolean(function<bool (const T&)> getFunc);
+//    void asNumber(function<int (const T&)> getFunc);
 
 //    void asObject();
 
@@ -44,6 +44,12 @@ template<class T>
 void MappingPropertyKindChooser<T>::asString(function<string (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsString(getFunc);
+}
+
+template<class T>
+void MappingPropertyKindChooser<T>::asBoolean(function<bool (const T&)> getFunc)
+{
+    m_mappingBuilder->mapAsBoolean(getFunc);
 }
 
 } // namespace mapper

@@ -57,11 +57,11 @@ struct StringsMultiArray
     string** values;
 };
 
-#define JSON_VALUE_FUNC(T, RET)      [](const T& x) -> string  { return x.RET; }
-#define JSON_VALUE_FUNC_BOOL(T, RET) [](const T& x) -> bool    { return x.RET; }
-#define JSON_VALUE_FUNC_INT(T, RET)  [](const T& x) -> int     { return x.RET; }
-#define JSON_VALUE_FUNC_FLOAT(T, RET)[](const T& x) -> float   { return x.RET; }
-#define JSON_VALUE_FUNC_(T, RET)     [](const T& x) -> string  { return to_string(x.RET); }
+#define MAPPER_GET_VALUE(T, RET)      [](const T& x) -> string  { return x.RET; }
+#define MAPPER_GET_VALUE_BOOL(T, RET) [](const T& x) -> bool    { return x.RET; }
+#define MAPPER_GET_VALUE_INT(T, RET)  [](const T& x) -> int     { return x.RET; }
+#define MAPPER_GET_VALUE_FLOAT(T, RET)[](const T& x) -> float   { return x.RET; }
+#define MAPPER_GET_VALUE_(T, RET)     [](const T& x) -> string  { return to_string(x.RET); }
 
 
 
@@ -77,19 +77,19 @@ int main()
     Shelf shelf {"Fantastyka", 23, books};
 
     Mapping<Book> bookMapping;
-    bookMapping.map("Title")->asString(JSON_VALUE_FUNC(Book, title));
-    bookMapping.map("Author", JSON_VALUE_FUNC(Book, author));
-    bookMapping.map<float>("Price", JSON_VALUE_FUNC_FLOAT(Book, something));
-    bookMapping.map("is_new", JSON_VALUE_FUNC_BOOL(Book, is_new));
+    bookMapping.map("Title")->asString(MAPPER_GET_VALUE(Book, title));
+    bookMapping.map("Author", MAPPER_GET_VALUE(Book, author));
+    bookMapping.map<float>("Price", MAPPER_GET_VALUE_FLOAT(Book, something));
+    bookMapping.map("is_new")->asBoolean(MAPPER_GET_VALUE_BOOL(Book, is_new));
 
     auto bookSerializer = serializerFactory.getObjectSerializer<Book>(bookMapping);
 
     cout << bookSerializer->serialize(book);
 
     Mapping<A> aMapping;
-    aMapping.map("name", JSON_VALUE_FUNC(A, name));
-    aMapping.map("title", JSON_VALUE_FUNC(A, title));
-    aMapping.map<int>("number", JSON_VALUE_FUNC_INT(A, number));
+    aMapping.map("name", MAPPER_GET_VALUE(A, name));
+    aMapping.map("title", MAPPER_GET_VALUE(A, title));
+    aMapping.map<int>("number", MAPPER_GET_VALUE_INT(A, number));
     aMapping.map<Book>("book", [](const A& x) -> Book { return x.book; }, bookMapping);
 
     auto aSerializer = serializerFactory.getObjectSerializer<A>(aMapping);
@@ -97,8 +97,8 @@ int main()
     cout << aSerializer->serialize(a);
 
     Mapping<Shelf> shelfMapping;
-    shelfMapping.map("name", JSON_VALUE_FUNC(Shelf, name));
-    shelfMapping.map<int>("number", JSON_VALUE_FUNC_INT(Shelf, number));
+    shelfMapping.map("name", MAPPER_GET_VALUE(Shelf, name));
+    shelfMapping.map<int>("number", MAPPER_GET_VALUE_INT(Shelf, number));
     shelfMapping.mapArrayOf<Book>("books",
                                      [](const Shelf& x) -> int { return x.books.size(); },
                                      [](const Shelf& x, int index) -> Book { return x.books[index]; },
@@ -110,7 +110,7 @@ int main()
 
     NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
     Mapping<NumbersCollection> numbersMapping;
-    numbersMapping.map("name", JSON_VALUE_FUNC(NumbersCollection, name));
+    numbersMapping.map("name", MAPPER_GET_VALUE(NumbersCollection, name));
     numbersMapping.mapArrayOfNumbers<int>
                                    ("values",
                                     [](const NumbersCollection& x) -> int { return x.count; },
@@ -122,7 +122,7 @@ int main()
 
     StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
     Mapping<StringsCollection> stringsMapping;
-    stringsMapping.map("name", JSON_VALUE_FUNC(StringsCollection, name));
+    stringsMapping.map("name", MAPPER_GET_VALUE(StringsCollection, name));
     stringsMapping.mapArrayOfStrings("values",
                                      [](const StringsCollection& x) -> int { return x.count; },
                                      [](const StringsCollection& x, int index) -> string { return x.values[index]; });
