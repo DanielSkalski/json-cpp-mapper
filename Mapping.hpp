@@ -11,6 +11,7 @@
 
 using namespace std;
 
+namespace mapper {
 
 template<class T>
 class Mapping
@@ -180,5 +181,6 @@ void Mapping<T>::mapArrayOfStringArrays
     m_properties.push_back(arrayPropertyDefinition);
 }
 
+} // namespace mapper
 
 #endif // SERIALIZER_H

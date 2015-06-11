@@ -14,6 +14,8 @@
 
 using namespace std;
 
+namespace mapper {
+
 template<class T>
 class PropertyDefinitionFactory
 {
@@ -190,5 +192,7 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& proper
 
     return propertyDefinition;
 }
+
+} // namespace mapper
 
 #endif // PROPERTYDEFINITIONFACTORY_H

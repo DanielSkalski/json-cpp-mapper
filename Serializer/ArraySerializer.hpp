@@ -4,6 +4,7 @@
 #include "SerializerCommon.h"
 #include <functional>
 
+namespace mapper {
 
 template<class OBJ_T, class ELEMENT_T>
 class ArraySerializer : public ISerializer<OBJ_T>
@@ -67,5 +68,7 @@ string ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj) const
 
     return out.str();
 }
+
+} // namespace mapper
 
 #endif // ARRAYSERIALIZER_H

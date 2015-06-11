@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace mapper {
+
 template<class T>
 class ISerializer
 {
@@ -13,5 +15,7 @@ public:
 
     virtual string serialize(const T& value) const = 0;
 };
+
+} // namespace mapper
 
 #endif // ISERIALIZER_H

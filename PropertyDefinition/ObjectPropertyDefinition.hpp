@@ -5,6 +5,7 @@
 
 #include "Serializer/ObjectSerializer.hpp"
 
+namespace mapper {
 
 template<class T>
 class Mapping;
@@ -67,5 +68,7 @@ PropertyKind ObjectPropertyDefinition<OBJ_T, PROPERTY_T>::propertyKind() const
 {
     return PropertyKind::Object;
 }
+
+} // namespace mapper
 
 #endif // OBJECTPROPERTYDEFINITION_H

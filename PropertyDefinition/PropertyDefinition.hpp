@@ -3,6 +3,8 @@
 
 #include "PropertyDefinitionCommon.h"
 
+namespace mapper {
+
 template<class OBJ_T, class PROPERTY_T>
 class PropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 {
@@ -61,5 +63,7 @@ PropertyKind PropertyDefinition<OBJ_T, PROPERTY_T>::propertyKind() const
 {
     return m_propertyKind;
 }
+
+} // namespace mapper
 
 #endif // PROPERTYDEFINITION_H

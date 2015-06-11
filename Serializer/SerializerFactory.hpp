@@ -8,6 +8,8 @@
 
 #include <memory>
 
+namespace mapper {
+
 class SerializerFactory
 {
     std::shared_ptr< NumberSerializer<int> > m_numberSerializer;
@@ -77,5 +79,7 @@ shared_ptr< ArraySerializer<OBJ_T, ELEMENT_T> > SerializerFactory::getArraySeria
 
     return serializer;
 }
+
+} // namespace mapper
 
 #endif // SERIALIZERFACTORY_H

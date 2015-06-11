@@ -3,6 +3,7 @@
 
 #include "SerializerCommon.h"
 
+namespace mapper {
 
 template<class T>
 class NumberSerializer : public ISerializer<T>
@@ -35,5 +36,7 @@ string NumberSerializer<T>::serialize(const T &value) const
 
     return out.str();
 }
+
+} // namespace mapper
 
 #endif // VALUESERIALIZER_H

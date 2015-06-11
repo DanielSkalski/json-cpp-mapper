@@ -4,6 +4,8 @@
 #include "PropertyDefinitionCommon.h"
 
 
+namespace mapper {
+
 template<class OBJ_T, class ELEMENT_T>
 class ArrayPropertyDefinition : public PropertyDefinitionBase<OBJ_T>
 {
@@ -55,5 +57,6 @@ PropertyKind ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::propertyKind() const
     return PropertyKind::Array;
 }
 
+} // namespace mapper
 
 #endif // ARRAYPROPERTYDEFINITION_H

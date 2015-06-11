@@ -1,6 +1,8 @@
 #ifndef PROPERTYKIND
 #define PROPERTYKIND
 
+namespace mapper {
+
 enum class PropertyKind
 {
     String,
@@ -9,6 +11,8 @@ enum class PropertyKind
     Object,
     Boolean
 };
+
+} // namespace mapper
 
 #endif // PROPERTYKIND
 

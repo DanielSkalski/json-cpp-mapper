@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace mapper {
+
 template<class OBJ_T>
 class PropertyDefinitionBase
 {
@@ -28,5 +30,7 @@ public:
 
     virtual PropertyKind propertyKind() const = 0;
 };
+
+} // namespace mapper
 
 #endif // PROPERTYDEFINITIONBASE_H

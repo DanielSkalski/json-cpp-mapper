@@ -4,9 +4,12 @@
 #include "SerializerCommon.h"
 #include "Mapping.hpp"
 
+namespace mapper {
+
 
 template<class T>
 class Mapping;
+
 
 template<class T>
 class ObjectSerializer : public ISerializer<T>
@@ -64,5 +67,7 @@ string ObjectSerializer<T>::serialize(const T &value) const
 
     return out.str();
 }
+
+} // namespace mapper
 
 #endif // OBJECTSERIALIZER_H
