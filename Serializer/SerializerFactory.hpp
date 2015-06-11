@@ -5,6 +5,7 @@
 #include "ObjectSerializer.hpp"
 #include "ArraySerializer.hpp"
 #include "StringSerializer.hpp"
+#include "BooleanSerializer.hpp"
 
 #include <memory>
 
@@ -23,6 +24,8 @@ public:
     shared_ptr< NumberSerializer<NUM_T> > getNumberSerializer() const;
 
     shared_ptr< StringSerializer > getStringSerializer() const;
+
+    shared_ptr< BooleanSerializer > getBooleanSerializer() const;
 
     template<class OBJ_T>
     shared_ptr< ObjectSerializer<OBJ_T> > getObjectSerializer(const Mapping<OBJ_T>& mapping) const;
@@ -59,6 +62,11 @@ shared_ptr< NumberSerializer<NUM_T> > SerializerFactory::getNumberSerializer() c
 shared_ptr<StringSerializer> SerializerFactory::getStringSerializer() const
 {
     return StringSerializer::make_shared();
+}
+
+shared_ptr<BooleanSerializer> SerializerFactory::getBooleanSerializer() const
+{
+    return BooleanSerializer::make_shared();
 }
 
 template<class OBJ_T>

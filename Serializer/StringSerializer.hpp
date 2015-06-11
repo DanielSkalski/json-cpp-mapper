@@ -10,8 +10,6 @@ class StringSerializer : public ISerializer<string>
     friend class SerializerFactory;
     struct private_ctor { };
 
-    StringSerializer() { }
-
     static shared_ptr<StringSerializer> make_shared()
     {
         return std::make_shared<StringSerializer>(private_ctor());

@@ -26,8 +26,12 @@ public:
                                                     (const string &propertyName,
                                                      function<string (const T&)> valueFunction) const;
 
+    shared_ptr< PropertyDefinitionBase<T> > createPropertyDefinition
+                                                    (const string &propertyName,
+                                                     function<bool (const T&)> valueFunction) const;
+
     template<typename PROP_T>
-    shared_ptr< PropertyDefinitionBase<T> > createValuePropertyDefinition
+    shared_ptr< PropertyDefinitionBase<T> > createPropertyDefinition
                                                     (const string &propertyName,
                                                      function<PROP_T (const T&)> valueFunction) const;
 
@@ -78,9 +82,21 @@ PropertyDefinitionFactory<T>::createPropertyDefinition(const string &propertyNam
 }
 
 template<class T>
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createPropertyDefinition(const string &propertyName,
+                                                            function<bool (const T&)> valueFunction) const
+{
+    auto propertyDefinition = PropertyDefinition<T, bool>::make_shared(propertyName, PropertyKind::Boolean);
+    propertyDefinition->m_getValueFunction = valueFunction;
+    propertyDefinition->m_serializer       = m_serializerFactory.getBooleanSerializer();
+
+    return propertyDefinition;
+}
+
+template<class T>
 template<typename PROP_T>
 shared_ptr< PropertyDefinitionBase<T> >
-PropertyDefinitionFactory<T>::createValuePropertyDefinition(const string &propertyName,
+PropertyDefinitionFactory<T>::createPropertyDefinition(const string &propertyName,
                                                             function<PROP_T (const T&)> valueFunction) const
 {
     auto propertyDefinition = PropertyDefinition<T, PROP_T>::make_shared(propertyName, PropertyKind::Number);

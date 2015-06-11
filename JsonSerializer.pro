@@ -24,5 +24,6 @@ HEADERS += \
     Serializer/NumberSerializer.hpp \
     PropertyDefinition/PropertyDefinitionCommon.h \
     Serializer/SerializerFactory.hpp \
-    Serializer/SerializerCommon.h
+    Serializer/SerializerCommon.h \
+    Serializer/BooleanSerializer.hpp
 

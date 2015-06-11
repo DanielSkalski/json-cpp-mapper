@@ -15,6 +15,7 @@ public:
     string title;
     string author;
     float something;
+    bool is_new;
 };
 
 class A
@@ -56,20 +57,21 @@ struct StringsMultiArray
     string** values;
 };
 
-#define JSON_VALUE_FUNC(T, RET)     [](const T& x) -> string { return x.RET; }
-#define JSON_VALUE_FUNC_INT(T, RET) [](const T& x) -> int    { return x.RET; }
-#define JSON_VALUE_FUNC_FLOAT(T, RET) [](const T& x) -> float    { return x.RET; }
+#define JSON_VALUE_FUNC(T, RET)      [](const T& x) -> string  { return x.RET; }
+#define JSON_VALUE_FUNC_BOOL(T, RET) [](const T& x) -> bool    { return x.RET; }
+#define JSON_VALUE_FUNC_INT(T, RET)  [](const T& x) -> int     { return x.RET; }
+#define JSON_VALUE_FUNC_FLOAT(T, RET)[](const T& x) -> float   { return x.RET; }
+#define JSON_VALUE_FUNC_(T, RET)     [](const T& x) -> string  { return to_string(x.RET); }
 
-#define JSON_VALUE_FUNC_(T, RET)    [](const T& x) -> string { return to_string(x.RET); }
 
 
 int main()
 {
     SerializerFactory serializerFactory;
 
-    Book book {"Czarodziciel", "Terry Pratchett", 20.5};
-    Book book2 {"Kolor magii", "Terry Pratchett", 23.5};
-    Book book3 {"Miecz przeznaczenia", "Andrzej Sapkowski", 33.0f};
+    Book book {"Czarodziciel", "Terry Pratchett", 20.5, true};
+    Book book2 {"Kolor magii", "Terry Pratchett", 23.5, false};
+    Book book3 {"Miecz przeznaczenia", "Andrzej Sapkowski", 33.0f, true};
     A a {"nazwa", "tytuł", 2, book};
     vector<Book> books { book, book2, book3 };
     Shelf shelf {"Fantastyka", 23, books};
@@ -78,6 +80,7 @@ int main()
     bookMapping.map("Title", JSON_VALUE_FUNC(Book, title));
     bookMapping.map("Author", JSON_VALUE_FUNC(Book, author));
     bookMapping.map<float>("Price", JSON_VALUE_FUNC_FLOAT(Book, something));
+    bookMapping.map("is_new", JSON_VALUE_FUNC_BOOL(Book, is_new));
 
     auto bookSerializer = serializerFactory.getObjectSerializer<Book>(bookMapping);
 

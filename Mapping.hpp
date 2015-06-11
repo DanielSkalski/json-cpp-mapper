@@ -28,6 +28,9 @@ public:
     void map(const string&               propertyName,
              function<string (const T&)> valueFunction);
 
+    void map(const string&               propertyName,
+             function<bool (const T&)> valueFunction);
+
     template<typename PROP_T>
     void map(const string&               propertyName,
              function<PROP_T (const T&)> valueFunction);
@@ -95,12 +98,22 @@ void Mapping<T>::map(const string& propertyName,
 }
 
 template<class T>
+void Mapping<T>::map(const string&             propertyName,
+                     function<bool (const T&)> valueFunction)
+{
+    auto propertyDefinition = m_propertyDefinitionFactory
+                                .createPropertyDefinition(propertyName, valueFunction);
+
+    m_properties.push_back(propertyDefinition);
+}
+
+template<class T>
 template<typename PROP_T>
 void Mapping<T>::map(const string& propertyName,
                      function<PROP_T (const T&)> valueFunction)
 {
     auto propertyDefinition = m_propertyDefinitionFactory
-                                .createValuePropertyDefinition(propertyName, valueFunction);
+                                .createPropertyDefinition(propertyName, valueFunction);
 
     m_properties.push_back(propertyDefinition);
 }
