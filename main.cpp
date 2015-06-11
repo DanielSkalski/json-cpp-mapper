@@ -59,8 +59,8 @@ struct StringsMultiArray
 
 #define MAPPER_GET_VALUE(T, RET)      [](const T& x) -> string  { return x.RET; }
 #define MAPPER_GET_VALUE_BOOL(T, RET) [](const T& x) -> bool    { return x.RET; }
-#define MAPPER_GET_VALUE_INT(T, RET)  [](const T& x) -> int     { return x.RET; }
-#define MAPPER_GET_VALUE_FLOAT(T, RET)[](const T& x) -> float   { return x.RET; }
+#define MAPPER_GET_VALUE_INT(T, RET)  (function<int (const T&)>)  ([](const T& x) -> int    { return x.RET; })
+#define MAPPER_GET_VALUE_FLOAT(T, RET)(function<float (const T&)>)([](const T& x) -> float    { return x.RET; })
 #define MAPPER_GET_VALUE_(T, RET)     [](const T& x) -> string  { return to_string(x.RET); }
 
 
@@ -78,8 +78,8 @@ int main()
 
     Mapping<Book> bookMapping;
     bookMapping.map("Title")->asString(MAPPER_GET_VALUE(Book, title));
-    bookMapping.map("Author", MAPPER_GET_VALUE(Book, author));
-    bookMapping.map<float>("Price", MAPPER_GET_VALUE_FLOAT(Book, something));
+    bookMapping.map("Author")->asString(MAPPER_GET_VALUE(Book, author));
+    bookMapping.map("Price")->asNumber(MAPPER_GET_VALUE_FLOAT(Book, something));
     bookMapping.map("is_new")->asBoolean(MAPPER_GET_VALUE_BOOL(Book, is_new));
 
     auto bookSerializer = serializerFactory.getObjectSerializer<Book>(bookMapping);

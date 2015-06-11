@@ -35,6 +35,9 @@ private:
     void mapAsString(function<string (const T&)> getFunc);
 
     void mapAsBoolean(function<bool (const T&)> getFunc);
+
+    template<typename RET>
+    void mapAsNumber(function<RET (const T&)> getFunc);
 };
 
 
@@ -69,6 +72,15 @@ void MappingBuilder<T>::mapAsString(function<string (const T&)> getFunc)
 
 template<class T>
 void MappingBuilder<T>::mapAsBoolean(function<bool (const T&)> getFunc)
+{
+    auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
+
+    m_mapping->m_properties.push_back(propDef);
+}
+
+template<class T>
+template<typename RET>
+void MappingBuilder<T>::mapAsNumber(function<RET (const T&)> getFunc)
 {
     auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
 

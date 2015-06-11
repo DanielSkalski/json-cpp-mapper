@@ -20,7 +20,12 @@ public:
 
     void asBoolean(function<bool (const T&)> getFunc);
 
-//    void asNumber(function<int (const T&)> getFunc);
+    void asNumber(function<int (const T&)> getFunc);
+    void asNumber(function<float (const T&)> getFunc);
+//    void asNumber(function<double (const T&)> getFunc);
+//    void asNumber(function<long long (const T&)> getFunc);
+//    void asNumber(function<char (const T&)> getFunc);
+//    void asNumber(function<short (const T&)> getFunc);
 
 //    void asObject();
 
@@ -50,6 +55,18 @@ template<class T>
 void MappingPropertyKindChooser<T>::asBoolean(function<bool (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsBoolean(getFunc);
+}
+
+template<class T>
+void MappingPropertyKindChooser<T>::asNumber(function<int (const T&)> getFunc)
+{
+    m_mappingBuilder->mapAsNumber(getFunc);
+}
+
+template<class T>
+void MappingPropertyKindChooser<T>::asNumber(function<float (const T&)> getFunc)
+{
+    m_mappingBuilder->mapAsNumber(getFunc);
 }
 
 } // namespace mapper
