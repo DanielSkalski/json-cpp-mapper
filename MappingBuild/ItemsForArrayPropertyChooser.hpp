@@ -24,7 +24,10 @@ public:
 
     void ofStrings(function<int (const T &)>     collectionSizeFunction,
                    function<string (const T &, int)> elementAccessFunction);
-//    void ofBooleans();
+
+    void ofBooleans(function<int (const T &)>     collectionSizeFunction,
+                    function<bool (const T &, int)> elementAccessFunction);
+
 //    void ofNumbers();
 //    void ofObjects();
 //    void ofArrays();
@@ -48,7 +51,15 @@ template<class T>
 void ItemsForArrayPropertyChooser<T>::ofStrings(function<int (const T &)>     collectionSizeFunction,
                                                 function<string (const T &, int)> elementAccessFunction)
 {
-    m_previousChooser->mapAsArrayOfStrings(collectionSizeFunction, elementAccessFunction);
+    m_previousChooser->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
+    delete this;
+}
+
+template<class T>
+void ItemsForArrayPropertyChooser<T>::ofBooleans(function<int (const T &)>     collectionSizeFunction,
+                                                function<bool (const T &, int)> elementAccessFunction)
+{
+    m_previousChooser->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
     delete this;
 }
 

@@ -62,6 +62,11 @@ public:
     shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
                                                     (const string& propertyName,
                                                      function<int (const T&)> collectionSizeFunction,
+                                                     function<bool (const T&, int)> elementAccessFunction) const;
+
+    shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
+                                                    (const string& propertyName,
+                                                     function<int (const T&)> collectionSizeFunction,
                                                      function<string* (const T&, int)> elementAccessFunction,
                                                      function<int (const string*)> innerCollectionSizeFunction,
                                                      function<string (const string*, int)> innerElementAccessFunction) const;
@@ -182,6 +187,24 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition (const string& prope
     return propertyDefinition;
 }
 
+template<class T>
+shared_ptr< PropertyDefinitionBase<T> >
+PropertyDefinitionFactory<T>::createArrayPropertyDefinition (const string& propertyName,
+                                                             function<int (const T&)> collectionSizeFunction,
+                                                             function<bool (const T&, int)> elementAccessFunction) const
+{
+    auto elementSerializer = m_serializerFactory.getBooleanSerializer();
+
+    auto propertyDefinition = ArrayPropertyDefinition<T, bool>::make_shared(propertyName);
+    propertyDefinition->m_arraySize      = collectionSizeFunction;
+    propertyDefinition->m_elementAccess  = elementAccessFunction;
+    propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer<T, bool>(
+                                                                            elementSerializer,
+                                                                            collectionSizeFunction,
+                                                                            elementAccessFunction);
+
+    return propertyDefinition;
+}
 
 template<class T>
 shared_ptr< PropertyDefinitionBase<T> >

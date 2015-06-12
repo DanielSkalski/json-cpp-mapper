@@ -51,8 +51,9 @@ private:
     template<class OBJ_T>
     void mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<OBJ_T (const T&)> getFunc);
 
-    void mapAsArrayOfStrings(function<int (const T &)>     collectionSizeFunction,
-                             function<string (const T &, int)> elementAccessFunction);
+    template<class ELEM_T>
+    void mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
+                      function<ELEM_T (const T &, int)> elementAccessFunction);
 };
 
 
@@ -118,8 +119,9 @@ void MappingBuilder<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<O
 }
 
 template<class T>
-void MappingBuilder<T>::mapAsArrayOfStrings(function<int (const T &)>     collectionSizeFunction,
-                                            function<string (const T &, int)> elementAccessFunction)
+template<class ELEM_T>
+void MappingBuilder<T>::mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
+                                     function<ELEM_T (const T &, int)> elementAccessFunction)
 {
     auto propDef = m_propertyDefinitionFactory.createArrayPropertyDefinition(m_propertyName,
                                                                              collectionSizeFunction,

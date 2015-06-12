@@ -49,6 +49,7 @@ class StringsCollection
 public:
     string name;
     string* values;
+    bool* booleans;
     int count;
 };
 
@@ -121,12 +122,21 @@ int main()
 
 //    cout << numbersSerializer->serialize(numbers);
 
-    StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
+    StringsCollection strings {
+        "Napisy",
+        new string[3] { "Ala", "ma", "kota" },
+        new bool[3] { true, false, true },
+        3
+    };
+
     Mapping<StringsCollection> stringsMapping;
     stringsMapping.map("name")->asString(MAPPER_GET_VALUE(StringsCollection, name));
     stringsMapping.map("values")->asArray()->ofStrings(
                                      [](const StringsCollection& x) -> int { return x.count; },
                                      [](const StringsCollection& x, int index) -> string { return x.values[index]; });
+    stringsMapping.map("booleans")->asArray()->ofBooleans(
+                                     [](const StringsCollection& x) -> int { return x.count; },
+                                     [](const StringsCollection& x, int index) -> bool { return x.booleans[index]; });
 
     auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
 
