@@ -87,71 +87,72 @@ int main()
     cout << bookSerializer->serialize(book);
 
     Mapping<A> aMapping;
-    aMapping.map("name", MAPPER_GET_VALUE(A, name));
-    aMapping.map("title", MAPPER_GET_VALUE(A, title));
-    aMapping.map<int>("number", MAPPER_GET_VALUE_INT(A, number));
-    aMapping.map<Book>("book", [](const A& x) -> Book { return x.book; }, bookMapping);
+    aMapping.map("name")->asString(MAPPER_GET_VALUE(A, name));
+    aMapping.map("title")->asString(MAPPER_GET_VALUE(A, title));
+    aMapping.map("number")->asNumber(MAPPER_GET_VALUE_INT(A, number));
+    aMapping.map("book")->asObject<Book>([](const A& x) -> Book { return x.book; })
+                        ->mappedWith(bookMapping);
 
     auto aSerializer = serializerFactory.getObjectSerializer<A>(aMapping);
 
     cout << aSerializer->serialize(a);
 
-    Mapping<Shelf> shelfMapping;
-    shelfMapping.map("name", MAPPER_GET_VALUE(Shelf, name));
-    shelfMapping.map<int>("number", MAPPER_GET_VALUE_INT(Shelf, number));
-    shelfMapping.mapArrayOf<Book>("books",
-                                     [](const Shelf& x) -> int { return x.books.size(); },
-                                     [](const Shelf& x, int index) -> Book { return x.books[index]; },
-                                     bookMapping);
+//    Mapping<Shelf> shelfMapping;
+//    shelfMapping.map("name", MAPPER_GET_VALUE(Shelf, name));
+//    shelfMapping.map<int>("number", MAPPER_GET_VALUE_INT(Shelf, number));
+//    shelfMapping.mapArrayOf<Book>("books",
+//                                     [](const Shelf& x) -> int { return x.books.size(); },
+//                                     [](const Shelf& x, int index) -> Book { return x.books[index]; },
+//                                     bookMapping);
 
-    auto shelfSerializer = serializerFactory.getObjectSerializer<Shelf>(shelfMapping);
+//    auto shelfSerializer = serializerFactory.getObjectSerializer<Shelf>(shelfMapping);
 
-    cout << shelfSerializer->serialize(shelf);
+//    cout << shelfSerializer->serialize(shelf);
 
-    NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
-    Mapping<NumbersCollection> numbersMapping;
-    numbersMapping.map("name", MAPPER_GET_VALUE(NumbersCollection, name));
-    numbersMapping.mapArrayOfNumbers<int>
-                                   ("values",
-                                    [](const NumbersCollection& x) -> int { return x.count; },
-                                    [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
+//    NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
+//    Mapping<NumbersCollection> numbersMapping;
+//    numbersMapping.map("name", MAPPER_GET_VALUE(NumbersCollection, name));
+//    numbersMapping.mapArrayOfNumbers<int>
+//                                   ("values",
+//                                    [](const NumbersCollection& x) -> int { return x.count; },
+//                                    [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
 
-    auto numbersSerializer = serializerFactory.getObjectSerializer<NumbersCollection>(numbersMapping);
+//    auto numbersSerializer = serializerFactory.getObjectSerializer<NumbersCollection>(numbersMapping);
 
-    cout << numbersSerializer->serialize(numbers);
+//    cout << numbersSerializer->serialize(numbers);
 
-    StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
-    Mapping<StringsCollection> stringsMapping;
-    stringsMapping.map("name", MAPPER_GET_VALUE(StringsCollection, name));
-    stringsMapping.mapArrayOfStrings("values",
-                                     [](const StringsCollection& x) -> int { return x.count; },
-                                     [](const StringsCollection& x, int index) -> string { return x.values[index]; });
+//    StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
+//    Mapping<StringsCollection> stringsMapping;
+//    stringsMapping.map("name", MAPPER_GET_VALUE(StringsCollection, name));
+//    stringsMapping.mapArrayOfStrings("values",
+//                                     [](const StringsCollection& x) -> int { return x.count; },
+//                                     [](const StringsCollection& x, int index) -> string { return x.values[index]; });
 
-    auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
+//    auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
 
-    cout << stringsSerializer->serialize(strings);
-
-
-    StringsMultiArray multiStrings
-    {
-        new string* [3]
-        {
-            new string[3] {"Ala", "ma", "kota"},
-            new string[3] {"Kota", "ma", "Ala"},
-            new string[3] {"Ola", "posiada", "psa"},
-        }
-    };
-
-    Mapping<StringsMultiArray> multiStringsMapping;
-    multiStringsMapping.mapArrayOfStringArrays("values",
-                                   [](const StringsMultiArray&) -> int { return 3; },
-                                   [](const StringsMultiArray& x, int index) -> string* { return x.values[index]; },
-                                   [](const string*) -> int { return 3; },
-                                   [](const string* x, int index) -> string { return x[index]; });
+//    cout << stringsSerializer->serialize(strings);
 
 
-    auto multiStringsSerializer = serializerFactory.getObjectSerializer<StringsMultiArray>(multiStringsMapping);
-    cout << multiStringsSerializer->serialize(multiStrings);
+//    StringsMultiArray multiStrings
+//    {
+//        new string* [3]
+//        {
+//            new string[3] {"Ala", "ma", "kota"},
+//            new string[3] {"Kota", "ma", "Ala"},
+//            new string[3] {"Ola", "posiada", "psa"},
+//        }
+//    };
+
+//    Mapping<StringsMultiArray> multiStringsMapping;
+//    multiStringsMapping.mapArrayOfStringArrays("values",
+//                                   [](const StringsMultiArray&) -> int { return 3; },
+//                                   [](const StringsMultiArray& x, int index) -> string* { return x.values[index]; },
+//                                   [](const string*) -> int { return 3; },
+//                                   [](const string* x, int index) -> string { return x[index]; });
+
+
+//    auto multiStringsSerializer = serializerFactory.getObjectSerializer<StringsMultiArray>(multiStringsMapping);
+//    cout << multiStringsSerializer->serialize(multiStrings);
 
     return 0;
 }

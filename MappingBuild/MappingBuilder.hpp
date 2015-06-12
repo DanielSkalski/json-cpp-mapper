@@ -2,6 +2,7 @@
 #define MAPPINGBUILDER_H
 
 #include <string>
+#include <iostream>
 #include <functional>
 #include <memory>
 #include <PropertyDefinition/PropertyDefinitionFactory.hpp>
@@ -21,6 +22,9 @@ class MappingBuilder
 {
     friend class MappingPropertyKindChooser<T>;
 
+    template<class, class>
+    friend class MappingForObjectPropertyChooser;
+
     string m_propertyName;
     Mapping<T>* m_mapping;
 
@@ -38,6 +42,9 @@ private:
 
     template<typename RET>
     void mapAsNumber(function<RET (const T&)> getFunc);
+
+    template<class OBJ_T>
+    void mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<OBJ_T (const T&)> getFunc);
 };
 
 
@@ -83,6 +90,17 @@ template<typename RET>
 void MappingBuilder<T>::mapAsNumber(function<RET (const T&)> getFunc)
 {
     auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
+
+    m_mapping->m_properties.push_back(propDef);
+}
+
+template<class T>
+template<class OBJ_T>
+void MappingBuilder<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<OBJ_T (const T&)> getFunc)
+{
+    auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName,
+                                                                        getFunc,
+                                                                        mapping);
 
     m_mapping->m_properties.push_back(propDef);
 }
