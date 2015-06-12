@@ -21,6 +21,11 @@ class MappingPropertyKindChooser
 public:
     explicit MappingPropertyKindChooser(MappingBuilder<T>* mappingBuilder);
 
+    ~MappingPropertyKindChooser()
+    {
+        std::cout << "Destruktor MappingPropertyKindChooser" << std::endl;
+    }
+
     void asString(function<string (const T&)> getFunc);
 
     void asBoolean(function<bool (const T&)> getFunc);
@@ -33,7 +38,7 @@ public:
 //    void asNumber(function<short (const T&)> getFunc);
 
     template<class OBJ_T>
-    unique_ptr<MappingForObjectPropertyChooser<T, OBJ_T>> asObject(function<OBJ_T (const T&)>);
+    MappingForObjectPropertyChooser<T, OBJ_T>* asObject(function<OBJ_T (const T&)>);
 
 //    void asArray();
 
@@ -59,36 +64,37 @@ template<class T>
 void MappingPropertyKindChooser<T>::asString(function<string (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsString(getFunc);
+
+    delete this;
 }
 
 template<class T>
 void MappingPropertyKindChooser<T>::asBoolean(function<bool (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsBoolean(getFunc);
+    delete this;
 }
 
 template<class T>
 void MappingPropertyKindChooser<T>::asNumber(function<int (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsNumber(getFunc);
+    delete this;
 }
 
 template<class T>
 void MappingPropertyKindChooser<T>::asNumber(function<float (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsNumber(getFunc);
+    delete this;
 }
 
 template<class T>
 template<class OBJ_T>
-unique_ptr<MappingForObjectPropertyChooser<T, OBJ_T>>
-MappingPropertyKindChooser<T>::asObject(function<OBJ_T (const T&)> getFunc)
+MappingForObjectPropertyChooser<T, OBJ_T> *MappingPropertyKindChooser<T>::asObject(
+        function<OBJ_T (const T&)> getFunc)
 {
-//    return unique_ptr<MappingForObjectPropertyChooser<T, OBJ_T>>(
-//            new MappingForObjectPropertyChooser<T, OBJ_T>(this, getFunc));
-
-    return unique_ptr<MappingForObjectPropertyChooser<T, OBJ_T>>(
-            new MappingForObjectPropertyChooser<T, OBJ_T>(m_mappingBuilder, getFunc));
+    return new MappingForObjectPropertyChooser<T, OBJ_T>(this, getFunc);
 }
 
 // --- PRIVATE ---
@@ -99,6 +105,7 @@ void MappingPropertyKindChooser<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping
                                                           function<OBJ_T (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsObjectMappedWith(mapping, getFunc);
+    delete this;
 }
 
 } // namespace mapper

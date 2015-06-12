@@ -23,6 +23,11 @@ public:
     MappingForObjectPropertyChooser(MappingBuilder<T>* mappingBuilder,
                                     function<OBJ_T (const T&)> getFunc);
 
+    ~MappingForObjectPropertyChooser()
+    {
+        std::cout << "Destructor MappingForObjectPropertyChooser" << std::endl;
+    }
+
     void mappedWith(Mapping<OBJ_T> mapping);
 };
 
@@ -53,9 +58,8 @@ MappingForObjectPropertyChooser<T, OBJ_T>::MappingForObjectPropertyChooser(
 template<class T, class OBJ_T>
 void MappingForObjectPropertyChooser<T, OBJ_T>::mappedWith(Mapping<OBJ_T> mapping)
 {
-//    m_previousChooser->mapAsObjectMappedWith(mapping, m_getFunc);
-
-    m_mappingBuilder->mapAsObjectMappedWith(mapping, m_getFunc);
+    m_previousChooser->mapAsObjectMappedWith(mapping, m_getFunc);
+    delete this;
 }
 
 }

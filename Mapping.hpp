@@ -30,7 +30,7 @@ public:
 
     const list< shared_ptr< PropertyDefinitionBase<T> > >& properties() const;
 
-    unique_ptr<MappingPropertyKindChooser<T>> map(const string& propertyName);
+    MappingPropertyKindChooser<T>* map(const string& propertyName);
 
     void map(const string&               propertyName,
              function<string (const T&)> valueFunction);
@@ -95,9 +95,9 @@ const list<shared_ptr<PropertyDefinitionBase<T> > >& Mapping<T>::properties() co
 }
 
 template<class T>
-unique_ptr<MappingPropertyKindChooser<T>> Mapping<T>::map(const string &propertyName)
+MappingPropertyKindChooser<T> *Mapping<T>::map(const string &propertyName)
 {
-    auto mb = unique_ptr<MappingBuilder<T>>(new MappingBuilder<T>(this));
+    auto mb = new MappingBuilder<T>(this);
 
     return mb->map(propertyName);
 }

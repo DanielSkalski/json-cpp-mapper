@@ -33,7 +33,12 @@ class MappingBuilder
 public:
     explicit MappingBuilder(Mapping<T>* mapping);
 
-    unique_ptr<MappingPropertyKindChooser<T>> map(const string& propertyName);
+    ~MappingBuilder()
+    {
+        std::cout << "Destruktor MappingBuilder" << std::endl;
+    }
+
+    MappingPropertyKindChooser<T>* map(const string& propertyName);
 
 private:
     void mapAsString(function<string (const T&)> getFunc);
@@ -62,11 +67,11 @@ MappingBuilder<T>::MappingBuilder(Mapping<T> *mapping)
 // ----- METHODS --------------------------------------------------------------
 
 template<class T>
-unique_ptr<MappingPropertyKindChooser<T>> MappingBuilder<T>::map(const string &propertyName)
+MappingPropertyKindChooser<T>* MappingBuilder<T>::map(const string &propertyName)
 {
     this->m_propertyName = propertyName;
 
-    return unique_ptr<MappingPropertyKindChooser<T>>(new MappingPropertyKindChooser<T>(this));
+    return new MappingPropertyKindChooser<T>(this);
 }
 
 template<class T>
@@ -75,6 +80,7 @@ void MappingBuilder<T>::mapAsString(function<string (const T&)> getFunc)
     auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
 
     m_mapping->m_properties.push_back(propDef);
+    delete this;
 }
 
 template<class T>
@@ -83,6 +89,7 @@ void MappingBuilder<T>::mapAsBoolean(function<bool (const T&)> getFunc)
     auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
 
     m_mapping->m_properties.push_back(propDef);
+    delete this;
 }
 
 template<class T>
@@ -92,6 +99,7 @@ void MappingBuilder<T>::mapAsNumber(function<RET (const T&)> getFunc)
     auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName, getFunc);
 
     m_mapping->m_properties.push_back(propDef);
+    delete this;
 }
 
 template<class T>
@@ -103,6 +111,7 @@ void MappingBuilder<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<O
                                                                         mapping);
 
     m_mapping->m_properties.push_back(propDef);
+    delete this;
 }
 
 } // namespace mapper
