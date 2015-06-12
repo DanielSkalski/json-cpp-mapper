@@ -121,16 +121,16 @@ int main()
 
 //    cout << numbersSerializer->serialize(numbers);
 
-//    StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
-//    Mapping<StringsCollection> stringsMapping;
-//    stringsMapping.map("name", MAPPER_GET_VALUE(StringsCollection, name));
-//    stringsMapping.mapArrayOfStrings("values",
-//                                     [](const StringsCollection& x) -> int { return x.count; },
-//                                     [](const StringsCollection& x, int index) -> string { return x.values[index]; });
+    StringsCollection strings { "Napisy", new string[3] { "Ala", "ma", "kota" }, 3 };
+    Mapping<StringsCollection> stringsMapping;
+    stringsMapping.map("name")->asString(MAPPER_GET_VALUE(StringsCollection, name));
+    stringsMapping.map("values")->asArray()->ofStrings(
+                                     [](const StringsCollection& x) -> int { return x.count; },
+                                     [](const StringsCollection& x, int index) -> string { return x.values[index]; });
 
-//    auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
+    auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
 
-//    cout << stringsSerializer->serialize(strings);
+    cout << stringsSerializer->serialize(strings);
 
 
 //    StringsMultiArray multiStrings

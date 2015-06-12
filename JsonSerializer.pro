@@ -28,5 +28,6 @@ HEADERS += \
     Serializer/BooleanSerializer.hpp \
     MappingBuild/MappingBuilder.hpp \
     MappingBuild/MappingPropertyKindChooser.hpp \
-    MappingBuild/MappingForObjectPropertyChooser.hpp
+    MappingBuild/MappingForObjectPropertyChooser.hpp \
+    MappingBuild/ItemsForArrayPropertyChooser.hpp
 

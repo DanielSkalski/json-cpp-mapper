@@ -50,6 +50,9 @@ private:
 
     template<class OBJ_T>
     void mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<OBJ_T (const T&)> getFunc);
+
+    void mapAsArrayOfStrings(function<int (const T &)>     collectionSizeFunction,
+                             function<string (const T &, int)> elementAccessFunction);
 };
 
 
@@ -109,6 +112,18 @@ void MappingBuilder<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<O
     auto propDef = m_propertyDefinitionFactory.createPropertyDefinition(m_propertyName,
                                                                         getFunc,
                                                                         mapping);
+
+    m_mapping->m_properties.push_back(propDef);
+    delete this;
+}
+
+template<class T>
+void MappingBuilder<T>::mapAsArrayOfStrings(function<int (const T &)>     collectionSizeFunction,
+                                            function<string (const T &, int)> elementAccessFunction)
+{
+    auto propDef = m_propertyDefinitionFactory.createArrayPropertyDefinition(m_propertyName,
+                                                                             collectionSizeFunction,
+                                                                             elementAccessFunction);
 
     m_mapping->m_properties.push_back(propDef);
     delete this;

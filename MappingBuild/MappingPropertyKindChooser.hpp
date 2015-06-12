@@ -3,6 +3,7 @@
 
 #include "MappingBuilder.hpp"
 #include "MappingForObjectPropertyChooser.hpp"
+#include "ItemsForArrayPropertyChooser.hpp"
 #include <functional>
 #include <iostream>
 
@@ -15,6 +16,8 @@ class MappingPropertyKindChooser
 {
     template<class, class>
     friend class MappingForObjectPropertyChooser;
+
+    friend class ItemsForArrayPropertyChooser<T>;
 
     MappingBuilder<T>* m_mappingBuilder;
 
@@ -40,11 +43,14 @@ public:
     template<class OBJ_T>
     MappingForObjectPropertyChooser<T, OBJ_T>* asObject(function<OBJ_T (const T&)>);
 
-//    void asArray();
+    ItemsForArrayPropertyChooser<T>* asArray();
 
 private:
     template<class OBJ_T>
     void mapAsObjectMappedWith(Mapping<OBJ_T> mapping, function<OBJ_T (const T&)> getFunc);
+
+    void mapAsArrayOfStrings(function<int (const T &)>     collectionSizeFunction,
+                             function<string (const T &, int)> elementAccessFunction);
 };
 
 // ----------------------------------------------------------------------------
@@ -97,6 +103,12 @@ MappingForObjectPropertyChooser<T, OBJ_T> *MappingPropertyKindChooser<T>::asObje
     return new MappingForObjectPropertyChooser<T, OBJ_T>(this, getFunc);
 }
 
+template<class T>
+ItemsForArrayPropertyChooser<T>* MappingPropertyKindChooser<T>::asArray()
+{
+    return new ItemsForArrayPropertyChooser<T>(this);
+}
+
 // --- PRIVATE ---
 
 template<class T>
@@ -105,6 +117,14 @@ void MappingPropertyKindChooser<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping
                                                           function<OBJ_T (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsObjectMappedWith(mapping, getFunc);
+    delete this;
+}
+
+template<class T>
+void MappingPropertyKindChooser<T>::mapAsArrayOfStrings(function<int (const T &)>     collectionSizeFunction,
+                                                        function<string (const T &, int)> elementAccessFunction)
+{
+    m_mappingBuilder->mapAsArrayOfStrings(collectionSizeFunction, elementAccessFunction);
     delete this;
 }
 
