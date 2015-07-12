@@ -33,7 +33,11 @@ public:
 
     void ofNumbers(function<int (const T &)>     collectionSizeFunction,
                    function<float (const T &, int)> elementAccessFunction);
-//    void ofObjects();
+
+    template<class ELEM_T>
+    void ofObjects(function<int (const T &)>     collectionSizeFunction,
+                   function<ELEM_T (const T &, int)> elementAccessFunction,
+                   Mapping<ELEM_T> mapping);
 //    void ofArrays();
 };
 
@@ -80,6 +84,16 @@ void ItemsForArrayPropertyChooser<T>::ofNumbers(function<int (const T &)>     co
                                                 function<float (const T &, int)> elementAccessFunction)
 {
     m_previousChooser->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
+    delete this;
+}
+
+template<class T>
+template<class ELEM_T>
+void ItemsForArrayPropertyChooser<T>::ofObjects(function<int (const T &)>     collectionSizeFunction,
+                                                function<ELEM_T (const T &, int)> elementAccessFunction,
+                                                Mapping<ELEM_T> mapping)
+{
+    m_previousChooser->mapAsArrayOf(collectionSizeFunction, elementAccessFunction, mapping);
     delete this;
 }
 

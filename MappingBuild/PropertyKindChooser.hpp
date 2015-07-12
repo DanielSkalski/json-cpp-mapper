@@ -52,6 +52,11 @@ private:
     template<class ELEM_T>
     void mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
                       function<ELEM_T (const T &, int)> elementAccessFunction);
+
+    template<class ELEM_T>
+    void mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
+                      function<ELEM_T (const T &, int)> elementAccessFunction,
+                      Mapping<ELEM_T> mapping);
 };
 
 // ----------------------------------------------------------------------------
@@ -124,9 +129,19 @@ void PropertyKindChooser<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping,
 template<class T>
 template<class ELEM_T>
 void PropertyKindChooser<T>::mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
-                                                 function<ELEM_T (const T &, int)> elementAccessFunction)
+                                          function<ELEM_T (const T &, int)> elementAccessFunction)
 {
     m_mappingBuilder->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
+    delete this;
+}
+
+template<class T>
+template<class ELEM_T>
+void PropertyKindChooser<T>::mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
+                                          function<ELEM_T (const T &, int)> elementAccessFunction,
+                                          Mapping<ELEM_T> mapping)
+{
+    m_mappingBuilder->mapAsArrayOfObjects(collectionSizeFunction, elementAccessFunction, mapping);
     delete this;
 }
 

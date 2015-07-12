@@ -54,6 +54,11 @@ private:
     template<class ELEM_T>
     void mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
                       function<ELEM_T (const T &, int)> elementAccessFunction);
+
+    template<class ELEM_T>
+    void mapAsArrayOfObjects(function<int (const T &)>     collectionSizeFunction,
+                             function<ELEM_T (const T &, int)> elementAccessFunction,
+                             const Mapping<ELEM_T>& elementTypeMapping);
 };
 
 
@@ -126,6 +131,21 @@ void MappingBuilder<T>::mapAsArrayOf(function<int (const T &)>     collectionSiz
     auto propDef = m_propertyDefinitionFactory.createArrayPropertyDefinition(m_propertyName,
                                                                              collectionSizeFunction,
                                                                              elementAccessFunction);
+
+    m_mapping->m_properties.push_back(propDef);
+    delete this;
+}
+
+template<class T>
+template<class ELEM_T>
+void MappingBuilder<T>::mapAsArrayOfObjects(function<int (const T &)>     collectionSizeFunction,
+                                            function<ELEM_T (const T &, int)> elementAccessFunction,
+                                            const Mapping<ELEM_T>& elementTypeMapping)
+{
+    auto propDef = m_propertyDefinitionFactory.createArrayPropertyDefinition(m_propertyName,
+                                                                             collectionSizeFunction,
+                                                                             elementAccessFunction,
+                                                                             elementTypeMapping);
 
     m_mapping->m_properties.push_back(propDef);
     delete this;

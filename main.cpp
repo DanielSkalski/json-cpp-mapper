@@ -102,11 +102,11 @@ int main()
 
     Mapping<Shelf> shelfMapping;
     shelfMapping.map("name", MAPPER_GET_VALUE(Shelf, name));
-//    shelfMapping.map<int>("number", MAPPER_GET_VALUE_INT(Shelf, number));
-//    shelfMapping.mapArrayOf<Book>("books",
-//                                     [](const Shelf& x) -> int { return x.books.size(); },
-//                                     [](const Shelf& x, int index) -> Book { return x.books[index]; },
-//                                     bookMapping);
+    shelfMapping.map("number")->asNumber(MAPPER_GET_VALUE_INT(Shelf, number));
+    shelfMapping.map("books")->asArray()->ofObjects<Book>(
+                                     [](const Shelf& x) -> int { return x.books.size(); },
+                                     [](const Shelf& x, int index) -> Book { return x.books[index]; },
+                                     bookMapping);
 
     auto shelfSerializer = serializerFactory.getObjectSerializer<Shelf>(shelfMapping);
 
