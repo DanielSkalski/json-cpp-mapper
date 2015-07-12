@@ -29,5 +29,6 @@ HEADERS += \
     MappingBuild/MappingBuilder.hpp \
     MappingBuild/MappingForObjectPropertyChooser.hpp \
     MappingBuild/ItemsForArrayPropertyChooser.hpp \
-    MappingBuild/PropertyKindChooser.hpp
+    MappingBuild/PropertyKindChooser.hpp \
+    JsonSerializer.h
 
