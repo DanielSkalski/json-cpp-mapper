@@ -64,6 +64,8 @@ struct StringsMultiArray
 #define MAPPER_GET_VALUE_FLOAT(T, RET)(function<float (const T&)>)([](const T& x) -> float    { return x.RET; })
 #define MAPPER_GET_VALUE_(T, RET)     [](const T& x) -> string  { return to_string(x.RET); }
 
+#define MAPPER_ARRAY_GET_COUNT(T, RET)[](const T& x) -> int { return x.RET; }
+
 
 
 int main()
@@ -110,17 +112,17 @@ int main()
 
 //    cout << shelfSerializer->serialize(shelf);
 
-//    NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
-//    Mapping<NumbersCollection> numbersMapping;
-//    numbersMapping.map("name", MAPPER_GET_VALUE(NumbersCollection, name));
-//    numbersMapping.mapArrayOfNumbers<int>
-//                                   ("values",
-//                                    [](const NumbersCollection& x) -> int { return x.count; },
-//                                    [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
+    NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
+    Mapping<NumbersCollection> numbersMapping;
+    numbersMapping.map("name")->asString(MAPPER_GET_VALUE(NumbersCollection, name));
+    numbersMapping.map("values")->asArray()->ofNumbers(
+                                    [](const NumbersCollection& x) -> int { return x.count; },
+                                    (function<int (const NumbersCollection&, int)>)
+                                    [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
 
-//    auto numbersSerializer = serializerFactory.getObjectSerializer<NumbersCollection>(numbersMapping);
+    auto numbersSerializer = serializerFactory.getObjectSerializer<NumbersCollection>(numbersMapping);
 
-//    cout << numbersSerializer->serialize(numbers);
+    cout << numbersSerializer->serialize(numbers);
 
     StringsCollection strings {
         "Napisy",

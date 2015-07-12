@@ -48,11 +48,11 @@ public:
                                                      function<ELEM_T (const T&, int)> elementAccessFunction,
                                                      const Mapping<ELEM_T>& elementTypeMapping) const;
 
-    template<typename ELEM_T>
+    template<typename NUMBER_T>
     shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
                                                     (const string& propertyName,
                                                      function<int (const T&)> collectionSizeFunction,
-                                                     function<ELEM_T (const T&, int)> elementAccessFunction) const;
+                                                     function<NUMBER_T (const T&, int)> elementAccessFunction) const;
 
     shared_ptr< PropertyDefinitionBase<T> > createArrayPropertyDefinition
                                                     (const string& propertyName,
@@ -149,18 +149,18 @@ PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& proper
 
 
 template<class T>
-template<class ELEM_T>
+template<class NUMBER_T>
 shared_ptr< PropertyDefinitionBase<T> >
 PropertyDefinitionFactory<T>::createArrayPropertyDefinition(const string& propertyName,
                                                             function<int (const T&)> collectionSizeFunction,
-                                                            function<ELEM_T (const T&, int)> elementAccessFunction) const
+                                                            function<NUMBER_T (const T&, int)> elementAccessFunction) const
 {
-    auto elementSerializer = m_serializerFactory.getNumberSerializer<ELEM_T>();
+    auto elementSerializer = m_serializerFactory.getNumberSerializer<NUMBER_T>();
 
-    auto propertyDefinition = ArrayPropertyDefinition<T, ELEM_T>::make_shared(propertyName);
+    auto propertyDefinition = ArrayPropertyDefinition<T, NUMBER_T>::make_shared(propertyName);
     propertyDefinition->m_arraySize      = collectionSizeFunction;
     propertyDefinition->m_elementAccess  = elementAccessFunction;
-    propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer<T, ELEM_T>(
+    propertyDefinition->m_serializer     = m_serializerFactory.getArraySerializer<T, NUMBER_T>(
                                                                         elementSerializer,
                                                                         collectionSizeFunction,
                                                                         elementAccessFunction);

@@ -28,7 +28,11 @@ public:
     void ofBooleans(function<int (const T &)>     collectionSizeFunction,
                     function<bool (const T &, int)> elementAccessFunction);
 
-//    void ofNumbers();
+    void ofNumbers(function<int (const T &)>     collectionSizeFunction,
+                   function<int (const T &, int)> elementAccessFunction);
+
+    void ofNumbers(function<int (const T &)>     collectionSizeFunction,
+                   function<float (const T &, int)> elementAccessFunction);
 //    void ofObjects();
 //    void ofArrays();
 };
@@ -58,6 +62,22 @@ void ItemsForArrayPropertyChooser<T>::ofStrings(function<int (const T &)>     co
 template<class T>
 void ItemsForArrayPropertyChooser<T>::ofBooleans(function<int (const T &)>     collectionSizeFunction,
                                                 function<bool (const T &, int)> elementAccessFunction)
+{
+    m_previousChooser->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
+    delete this;
+}
+
+template<class T>
+void ItemsForArrayPropertyChooser<T>::ofNumbers(function<int (const T &)>     collectionSizeFunction,
+                                                function<int (const T &, int)> elementAccessFunction)
+{
+    m_previousChooser->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
+    delete this;
+}
+
+template<class T>
+void ItemsForArrayPropertyChooser<T>::ofNumbers(function<int (const T &)>     collectionSizeFunction,
+                                                function<float (const T &, int)> elementAccessFunction)
 {
     m_previousChooser->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
     delete this;
