@@ -101,7 +101,7 @@ int main()
     cout << aSerializer->serialize(a);
 
     Mapping<Shelf> shelfMapping;
-    shelfMapping.map("name", MAPPER_GET_VALUE(Shelf, name));
+    shelfMapping.map("name")->asString(MAPPER_GET_VALUE(Shelf, name));
     shelfMapping.map("number")->asNumber(MAPPER_GET_VALUE_INT(Shelf, number));
     shelfMapping.map("books")->asArray()->ofObjects<Book>(
                                      [](const Shelf& x) -> int { return x.books.size(); },
