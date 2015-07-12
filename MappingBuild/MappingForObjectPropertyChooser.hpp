@@ -1,7 +1,7 @@
 #ifndef MAPPINGFOROBJECTPROPERTYCHOOSER_H
 #define MAPPINGFOROBJECTPROPERTYCHOOSER_H
 
-#include "MappingPropertyKindChooser.hpp"
+#include "PropertyKindChooser.hpp"
 
 namespace mapper {
 
@@ -11,13 +11,13 @@ class Mapping;
 template<class T, class OBJ_T>
 class MappingForObjectPropertyChooser
 {
-    MappingPropertyKindChooser<T>* m_previousChooser;
+    PropertyKindChooser<T>* m_previousChooser;
     MappingBuilder<T>* m_mappingBuilder;
 
     function<OBJ_T (const T&)> m_getFunc;
 
 public:
-    MappingForObjectPropertyChooser(MappingPropertyKindChooser<T>* previousChooser,
+    MappingForObjectPropertyChooser(PropertyKindChooser<T>* previousChooser,
                                     function<OBJ_T (const T&)> getFunc);
 
     MappingForObjectPropertyChooser(MappingBuilder<T>* mappingBuilder,
@@ -37,7 +37,7 @@ public:
 
 template<class T, class OBJ_T>
 MappingForObjectPropertyChooser<T, OBJ_T>::MappingForObjectPropertyChooser(
-        MappingPropertyKindChooser<T>* previousChooser,
+        PropertyKindChooser<T>* previousChooser,
         function<OBJ_T (const T&)> getFunc)
     : m_previousChooser(previousChooser), m_getFunc(getFunc)
 {

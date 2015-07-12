@@ -27,7 +27,7 @@ HEADERS += \
     Serializer/SerializerCommon.h \
     Serializer/BooleanSerializer.hpp \
     MappingBuild/MappingBuilder.hpp \
-    MappingBuild/MappingPropertyKindChooser.hpp \
     MappingBuild/MappingForObjectPropertyChooser.hpp \
-    MappingBuild/ItemsForArrayPropertyChooser.hpp
+    MappingBuild/ItemsForArrayPropertyChooser.hpp \
+    MappingBuild/PropertyKindChooser.hpp
 

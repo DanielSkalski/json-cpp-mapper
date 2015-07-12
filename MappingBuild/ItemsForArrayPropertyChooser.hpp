@@ -1,21 +1,21 @@
 #ifndef ITEMSFORARRAYPROPERTYCHOOSER_H
 #define ITEMSFORARRAYPROPERTYCHOOSER_H
 
-#include "MappingPropertyKindChooser.hpp"
+#include "PropertyKindChooser.hpp"
 #include <functional>
 
 namespace mapper {
 
 template<class T>
-class MappingPropertyKindChooser;
+class PropertyKindChooser;
 
 template<class T>
 class ItemsForArrayPropertyChooser
 {
-    MappingPropertyKindChooser<T>* m_previousChooser;
+    PropertyKindChooser<T>* m_previousChooser;
 
 public:
-    explicit ItemsForArrayPropertyChooser(MappingPropertyKindChooser<T>* previousChooser);
+    explicit ItemsForArrayPropertyChooser(PropertyKindChooser<T>* previousChooser);
 
     ~ItemsForArrayPropertyChooser()
     {
@@ -43,7 +43,7 @@ public:
 
 template<class T>
 ItemsForArrayPropertyChooser<T>::ItemsForArrayPropertyChooser(
-        MappingPropertyKindChooser<T>* previousChooser)
+        PropertyKindChooser<T>* previousChooser)
     : m_previousChooser(previousChooser)
 {
 

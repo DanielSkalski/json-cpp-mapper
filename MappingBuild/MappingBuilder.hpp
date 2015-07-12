@@ -12,7 +12,7 @@ using namespace std;
 namespace mapper {
 
 template<class T>
-class MappingPropertyKindChooser;
+class PropertyKindChooser;
 
 template<class T>
 class Mapping;
@@ -20,7 +20,7 @@ class Mapping;
 template<class T>
 class MappingBuilder
 {
-    friend class MappingPropertyKindChooser<T>;
+    friend class PropertyKindChooser<T>;
 
     template<class, class>
     friend class MappingForObjectPropertyChooser;
@@ -38,7 +38,7 @@ public:
         std::cout << "Destruktor MappingBuilder" << std::endl;
     }
 
-    MappingPropertyKindChooser<T>* map(const string& propertyName);
+    PropertyKindChooser<T>* map(const string& propertyName);
 
 private:
     void mapAsString(function<string (const T&)> getFunc);
@@ -71,11 +71,11 @@ MappingBuilder<T>::MappingBuilder(Mapping<T> *mapping)
 // ----- METHODS --------------------------------------------------------------
 
 template<class T>
-MappingPropertyKindChooser<T>* MappingBuilder<T>::map(const string &propertyName)
+PropertyKindChooser<T>* MappingBuilder<T>::map(const string &propertyName)
 {
     this->m_propertyName = propertyName;
 
-    return new MappingPropertyKindChooser<T>(this);
+    return new PropertyKindChooser<T>(this);
 }
 
 template<class T>

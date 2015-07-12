@@ -1,5 +1,5 @@
-#ifndef MAPPINGPROPERTYKINDCHOOSER_H
-#define MAPPINGPROPERTYKINDCHOOSER_H
+#ifndef PROPERTYKINDCHOOSER_H
+#define PROPERTYKINDCHOOSER_H
 
 #include "MappingBuilder.hpp"
 #include "MappingForObjectPropertyChooser.hpp"
@@ -12,7 +12,7 @@ using namespace std;
 namespace mapper {
 
 template<class T>
-class MappingPropertyKindChooser
+class PropertyKindChooser
 {
     template<class, class>
     friend class MappingForObjectPropertyChooser;
@@ -22,9 +22,9 @@ class MappingPropertyKindChooser
     MappingBuilder<T>* m_mappingBuilder;
 
 public:
-    explicit MappingPropertyKindChooser(MappingBuilder<T>* mappingBuilder);
+    explicit PropertyKindChooser(MappingBuilder<T>* mappingBuilder);
 
-    ~MappingPropertyKindChooser()
+    ~PropertyKindChooser()
     {
         std::cout << "Destruktor MappingPropertyKindChooser" << std::endl;
     }
@@ -59,7 +59,7 @@ private:
 // ---- CONSTRUCTORS ----------------------------------------------------------
 
 template<class T>
-MappingPropertyKindChooser<T>::MappingPropertyKindChooser(MappingBuilder<T> *mappingBuilder)
+PropertyKindChooser<T>::PropertyKindChooser(MappingBuilder<T> *mappingBuilder)
     : m_mappingBuilder(mappingBuilder)
 {
 
@@ -68,7 +68,7 @@ MappingPropertyKindChooser<T>::MappingPropertyKindChooser(MappingBuilder<T> *map
 // ----- METHODS --------------------------------------------------------------
 
 template<class T>
-void MappingPropertyKindChooser<T>::asString(function<string (const T&)> getFunc)
+void PropertyKindChooser<T>::asString(function<string (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsString(getFunc);
 
@@ -76,21 +76,21 @@ void MappingPropertyKindChooser<T>::asString(function<string (const T&)> getFunc
 }
 
 template<class T>
-void MappingPropertyKindChooser<T>::asBoolean(function<bool (const T&)> getFunc)
+void PropertyKindChooser<T>::asBoolean(function<bool (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsBoolean(getFunc);
     delete this;
 }
 
 template<class T>
-void MappingPropertyKindChooser<T>::asNumber(function<int (const T&)> getFunc)
+void PropertyKindChooser<T>::asNumber(function<int (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsNumber(getFunc);
     delete this;
 }
 
 template<class T>
-void MappingPropertyKindChooser<T>::asNumber(function<float (const T&)> getFunc)
+void PropertyKindChooser<T>::asNumber(function<float (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsNumber(getFunc);
     delete this;
@@ -98,14 +98,14 @@ void MappingPropertyKindChooser<T>::asNumber(function<float (const T&)> getFunc)
 
 template<class T>
 template<class OBJ_T>
-MappingForObjectPropertyChooser<T, OBJ_T> *MappingPropertyKindChooser<T>::asObject(
+MappingForObjectPropertyChooser<T, OBJ_T> *PropertyKindChooser<T>::asObject(
         function<OBJ_T (const T&)> getFunc)
 {
     return new MappingForObjectPropertyChooser<T, OBJ_T>(this, getFunc);
 }
 
 template<class T>
-ItemsForArrayPropertyChooser<T>* MappingPropertyKindChooser<T>::asArray()
+ItemsForArrayPropertyChooser<T>* PropertyKindChooser<T>::asArray()
 {
     return new ItemsForArrayPropertyChooser<T>(this);
 }
@@ -114,7 +114,7 @@ ItemsForArrayPropertyChooser<T>* MappingPropertyKindChooser<T>::asArray()
 
 template<class T>
 template<class OBJ_T>
-void MappingPropertyKindChooser<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping,
+void PropertyKindChooser<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping,
                                                           function<OBJ_T (const T&)> getFunc)
 {
     m_mappingBuilder->mapAsObjectMappedWith(mapping, getFunc);
@@ -123,7 +123,7 @@ void MappingPropertyKindChooser<T>::mapAsObjectMappedWith(Mapping<OBJ_T> mapping
 
 template<class T>
 template<class ELEM_T>
-void MappingPropertyKindChooser<T>::mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
+void PropertyKindChooser<T>::mapAsArrayOf(function<int (const T &)>     collectionSizeFunction,
                                                  function<ELEM_T (const T &, int)> elementAccessFunction)
 {
     m_mappingBuilder->mapAsArrayOf(collectionSizeFunction, elementAccessFunction);
@@ -132,4 +132,4 @@ void MappingPropertyKindChooser<T>::mapAsArrayOf(function<int (const T &)>     c
 
 } // namespace mapper
 
-#endif // MAPPINGPROPERTYKINDCHOOSER_H
+#endif // PROPERTYKINDCHOOSER_H

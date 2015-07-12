@@ -4,7 +4,7 @@
 #include "PropertyDefinition/PropertyDefinition.hpp"
 #include "PropertyDefinition/PropertyDefinitionFactory.hpp"
 #include "MappingBuild/MappingBuilder.hpp"
-#include "MappingBuild/MappingPropertyKindChooser.hpp"
+#include "MappingBuild/PropertyKindChooser.hpp"
 
 #include <functional>
 #include <memory>
@@ -30,7 +30,7 @@ public:
 
     const list< shared_ptr< PropertyDefinitionBase<T> > >& properties() const;
 
-    MappingPropertyKindChooser<T>* map(const string& propertyName);
+    PropertyKindChooser<T>* map(const string& propertyName);
 
     void map(const string&               propertyName,
              function<string (const T&)> valueFunction);
@@ -95,7 +95,7 @@ const list<shared_ptr<PropertyDefinitionBase<T> > >& Mapping<T>::properties() co
 }
 
 template<class T>
-MappingPropertyKindChooser<T> *Mapping<T>::map(const string &propertyName)
+PropertyKindChooser<T> *Mapping<T>::map(const string &propertyName)
 {
     auto mb = new MappingBuilder<T>(this);
 
