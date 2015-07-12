@@ -58,14 +58,19 @@ struct StringsMultiArray
     string** values;
 };
 
-#define MAPPER_GET_VALUE(T, RET)      [](const T& x) -> string  { return x.RET; }
-#define MAPPER_GET_VALUE_BOOL(T, RET) [](const T& x) -> bool    { return x.RET; }
-#define MAPPER_GET_VALUE_INT(T, RET)  (function<int (const T&)>)  ([](const T& x) -> int    { return x.RET; })
-#define MAPPER_GET_VALUE_FLOAT(T, RET)(function<float (const T&)>)([](const T& x) -> float    { return x.RET; })
-#define MAPPER_GET_VALUE_(T, RET)     [](const T& x) -> string  { return to_string(x.RET); }
+#define MAPPER_GET_VALUE(T, RET)           [](const T& x) -> string  { return x.RET; }
+#define MAPPER_GET_VALUE_BOOL(T, RET)      [](const T& x) -> bool    { return x.RET; }
+#define MAPPER_GET_VALUE_OBJ(T, TRET, RET) [](const T& x) -> TRET    { return x.RET; }
+#define MAPPER_GET_VALUE_INT(T, RET)       (function<int (const T&)>)  ([](const T& x) -> int   { return x.RET; })
+#define MAPPER_GET_VALUE_FLOAT(T, RET)     (function<float (const T&)>)([](const T& x) -> float { return x.RET; })
+#define MAPPER_GET_VALUE_(T, RET)          [](const T& x) -> string  { return to_string(x.RET); }
 
-#define MAPPER_ARRAY_GET_COUNT(T, RET)[](const T& x) -> int { return x.RET; }
-
+#define MAPPER_ARRAY_GET_COUNT(T, RET)     [](const T& x) -> int { return x.RET; }
+#define MAPPER_GET_INDEXED_VALUE(T, RET)        [](const T& x, int index) -> string { return x.RET[index]; }
+#define MAPPER_GET_INDEXED_VALUE_BOOL(T, RET)   [](const T& x, int index) -> bool   { return x.RET[index]; }
+#define MAPPER_GET_INDEXED_VALUE_INT(T, RET)    ((function<int (const T&, int)>)  [](const T& x, int index) -> int   { return x.RET[index]; })
+#define MAPPER_GET_INDEXED_VALUE_FLOAT(T, RET)  ((function<float (const T&, int)>)[](const T& x, int index) -> float { return x.RET[index]; })
+#define MAPPER_GET_INDEXED_VALUE_OBJ(T, TRET, RET)   [](const T& x, int index) -> TRET   { return x.RET[index]; }
 
 
 int main()
@@ -93,7 +98,7 @@ int main()
     aMapping.map("name")->asString(MAPPER_GET_VALUE(A, name));
     aMapping.map("title")->asString(MAPPER_GET_VALUE(A, title));
     aMapping.map("number")->asNumber(MAPPER_GET_VALUE_INT(A, number));
-    aMapping.map("book")->asObject<Book>([](const A& x) -> Book { return x.book; })
+    aMapping.map("book")->asObject<Book>(MAPPER_GET_VALUE_OBJ(A, Book, book))
                         ->mappedWith(bookMapping);
 
     auto aSerializer = serializerFactory.getObjectSerializer<A>(aMapping);
@@ -104,8 +109,8 @@ int main()
     shelfMapping.map("name")->asString(MAPPER_GET_VALUE(Shelf, name));
     shelfMapping.map("number")->asNumber(MAPPER_GET_VALUE_INT(Shelf, number));
     shelfMapping.map("books")->asArray()->ofObjects<Book>(
-                                     [](const Shelf& x) -> int { return x.books.size(); },
-                                     [](const Shelf& x, int index) -> Book { return x.books[index]; },
+                                     MAPPER_ARRAY_GET_COUNT(Shelf, books.size()),
+                                     MAPPER_GET_INDEXED_VALUE_OBJ(Shelf, Book, books),
                                      bookMapping);
 
     auto shelfSerializer = serializerFactory.getObjectSerializer<Shelf>(shelfMapping);
@@ -116,9 +121,8 @@ int main()
     Mapping<NumbersCollection> numbersMapping;
     numbersMapping.map("name")->asString(MAPPER_GET_VALUE(NumbersCollection, name));
     numbersMapping.map("values")->asArray()->ofNumbers(
-                                    [](const NumbersCollection& x) -> int { return x.count; },
-                                    (function<int (const NumbersCollection&, int)>)
-                                    [](const NumbersCollection& x, int index) -> int { return x.numbers[index]; });
+                                    MAPPER_ARRAY_GET_COUNT(NumbersCollection, count),
+                                    MAPPER_GET_INDEXED_VALUE_INT(NumbersCollection, numbers));
 
     auto numbersSerializer = serializerFactory.getObjectSerializer<NumbersCollection>(numbersMapping);
 
@@ -134,11 +138,11 @@ int main()
     Mapping<StringsCollection> stringsMapping;
     stringsMapping.map("name")->asString(MAPPER_GET_VALUE(StringsCollection, name));
     stringsMapping.map("values")->asArray()->ofStrings(
-                                     [](const StringsCollection& x) -> int { return x.count; },
-                                     [](const StringsCollection& x, int index) -> string { return x.values[index]; });
+                                     MAPPER_ARRAY_GET_COUNT(StringsCollection, count),
+                                     MAPPER_GET_INDEXED_VALUE(StringsCollection, values));
     stringsMapping.map("booleans")->asArray()->ofBooleans(
-                                     [](const StringsCollection& x) -> int { return x.count; },
-                                     [](const StringsCollection& x, int index) -> bool { return x.booleans[index]; });
+                                     MAPPER_ARRAY_GET_COUNT(StringsCollection, count),
+                                     MAPPER_GET_INDEXED_VALUE_BOOL(StringsCollection, booleans));
 
     auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
 
