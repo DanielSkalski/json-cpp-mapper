@@ -18,16 +18,14 @@ class BooleanSerializer : public ISerializer<bool>
 public:
     explicit BooleanSerializer(const private_ctor&) { }
 
-    string serialize(const bool &value) const override;
+    JsonStream& serialize(const bool &value, JsonStream& out) const override;
 };
 
-string BooleanSerializer::serialize(const bool& value) const
+JsonStream &BooleanSerializer::serialize(const bool& value, JsonStream &out) const
 {
-    std::stringstream out;
-
     out << (value ? "true" : "false");
 
-    return out.str();
+    return out;
 }
 
 } // namespace mapper

@@ -27,7 +27,7 @@ public:
     PropertyDefinition(const private_ctor&, const string& propertyName, PropertyKind propertyKind = PropertyKind::String);
     virtual ~PropertyDefinition() { }
 
-    string serializeValue(const OBJ_T& obj) const override;
+    JsonStream& serializeValue(const OBJ_T& obj, JsonStream& out) const override;
 
     PropertyKind propertyKind() const override;
 };
@@ -47,15 +47,13 @@ PropertyDefinition<OBJ_T, PROPERTY_T>::PropertyDefinition(const private_ctor&,
 // ----- METHODS --------------------------------------------------------------
 
 template<class OBJ_T, class PROPERTY_T>
-string PropertyDefinition<OBJ_T, PROPERTY_T>::serializeValue(const OBJ_T& obj) const
+JsonStream &PropertyDefinition<OBJ_T, PROPERTY_T>::serializeValue(const OBJ_T& obj, JsonStream &out) const
 {
-    stringstream out;
-
     PROPERTY_T value = m_getValueFunction(obj);
 
-    out << m_serializer->serialize(value);
+    m_serializer->serialize(value, out);
 
-    return out.str();
+    return out;
 }
 
 template<class OBJ_T, class PROPERTY_T>

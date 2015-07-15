@@ -35,7 +35,7 @@ public:
 
     ~MappingBuilder()
     {
-        std::cout << "Destruktor MappingBuilder" << std::endl;
+//        std::cout << "Destruktor MappingBuilder" << std::endl;
     }
 
     PropertyKindChooser<T>* map(const string& propertyName);

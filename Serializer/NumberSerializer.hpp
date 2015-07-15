@@ -22,19 +22,17 @@ public:
     explicit NumberSerializer(const private_ctor&) {}
     virtual ~NumberSerializer() { }
 
-    string serialize(const T &value) const override;
+    JsonStream& serialize(const T &value, JsonStream& out) const override;
 };
 
 // ----------------------------------------------------------------------------
 
 template<class T>
-string NumberSerializer<T>::serialize(const T &value) const
+JsonStream &NumberSerializer<T>::serialize(const T &value, JsonStream &out) const
 {
-    std::stringstream out;
-
     out << std::to_string(value);
 
-    return out.str();
+    return out;
 }
 
 } // namespace mapper

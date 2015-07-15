@@ -26,7 +26,7 @@ public:
     ArraySerializer(const private_ctor&, shared_ptr< ISerializer<ELEMENT_T> >& elementSerializer);
     virtual ~ArraySerializer() {}
 
-    string serialize(const OBJ_T &obj) const override;
+    JsonStream& serialize(const OBJ_T &obj, JsonStream& out) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -43,30 +43,27 @@ ArraySerializer<OBJ_T, ELEMENT_T>::ArraySerializer(const private_ctor &,
 // ----- METHODS --------------------------------------------------------------
 
 template<class OBJ_T, class ELEMENT_T>
-string ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj) const
+JsonStream& ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj, JsonStream& out) const
 {
-    stringstream out;
+    out << "[" << "\n";
 
-    out << "[" << endl;
+    int arraySize =  m_arraySize(obj);
 
-    for (int i = 0; i < m_arraySize(obj); i++)
+    for (int i = 0; i < arraySize; i++)
     {
         ELEMENT_T value = m_elementAccess(obj, i);
 
-        string serializedValue = m_elementSerializer->serialize(value);
+        m_elementSerializer->serialize(value, out);
 
-        out << serializedValue << "," << endl;
+        if (i < arraySize - 1)
+        {
+            out << "," << "\n";
+        }
     }
 
-    if (m_arraySize(obj) > 0)
-    {
-        // remove last "," sign
-        out.seekp(-2, out.cur);
-    }
+    out << "]" << "\n";
 
-    out << "]" << endl;
-
-    return out.str();
+    return out;
 }
 
 } // namespace mapper

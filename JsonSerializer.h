@@ -3,6 +3,7 @@
 
 #include "Mapping.hpp"
 #include "Serializer/ObjectSerializer.hpp"
+#include "JsonStream.hpp"
 
 namespace mapper {
 
@@ -20,6 +21,37 @@ namespace mapper {
 #define MAPPER_GET_INDEXED_VALUE_FLOAT(T, RET)  ((function<float (const T&, int)>)[](const T& x, int index) -> float { return x.RET[index]; })
 #define MAPPER_GET_INDEXED_VALUE_OBJ(T, TRET, RET)   [](const T& x, int index) -> TRET   { return x.RET[index]; }
 
+template<class T>
+class JsonSerializer
+{
+    shared_ptr<ObjectSerializer<T>> m_serializer;
+    SerializerFactory m_factory;
+
+public:
+    explicit JsonSerializer(const Mapping<T>& mapping)
+    {
+        m_serializer = m_factory.getObjectSerializer<T>(mapping);
+    }
+
+    string serialize(const T& obj)
+    {
+        stringstream strStream;
+        JsonStream jsonStream(strStream);
+
+        m_serializer->serialize(obj, jsonStream);
+
+        return strStream.str();
+    }
+
+    ostream& serialize(const T& obj, ostream& out)
+    {
+        JsonStream jsonStream(out);
+        m_serializer->serialize(obj, jsonStream);
+        return out;
+    }
+};
+
 }
+
 
 #endif // JSONSERIALIZER

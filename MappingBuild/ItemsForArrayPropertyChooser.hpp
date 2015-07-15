@@ -19,7 +19,7 @@ public:
 
     ~ItemsForArrayPropertyChooser()
     {
-        std::cout << "Destructor ItemsForArrayPropertyChooser" << std::endl;
+//        std::cout << "Destructor ItemsForArrayPropertyChooser" << std::endl;
     }
 
     void ofStrings(function<int (const T &)>     collectionSizeFunction,

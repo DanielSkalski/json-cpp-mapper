@@ -2,6 +2,7 @@
 #define ISERIALIZER_H
 
 #include <string>
+#include "JsonStream.hpp"
 
 using namespace std;
 
@@ -13,7 +14,7 @@ class ISerializer
 public:
     virtual ~ISerializer() { }
 
-    virtual string serialize(const T& value) const = 0;
+    virtual JsonStream& serialize(const T& value, JsonStream& out) const = 0;
 };
 
 } // namespace mapper

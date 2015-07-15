@@ -26,7 +26,7 @@ public:
 
     ~PropertyKindChooser()
     {
-        std::cout << "Destruktor MappingPropertyKindChooser" << std::endl;
+//        std::cout << "Destruktor MappingPropertyKindChooser" << std::endl;
     }
 
     void asString(function<string (const T&)> getFunc);

@@ -19,19 +19,17 @@ public:
     explicit StringSerializer(const private_ctor&) { }
     virtual ~StringSerializer() { }
 
-    string serialize(const string &value) const override;
+    JsonStream &serialize(const string &value, JsonStream& out) const override;
 };
 
 
 // ----------------------------------------------------------------------------
 
-string StringSerializer::serialize(const string &value) const
+JsonStream& StringSerializer::serialize(const string &value, JsonStream &out) const
 {
-    std::stringstream out;
-
     out << "\"" << value << "\"";
 
-    return out.str();
+    return out;
 }
 
 } // namespace mapper

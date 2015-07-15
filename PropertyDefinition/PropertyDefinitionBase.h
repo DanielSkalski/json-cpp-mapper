@@ -3,6 +3,7 @@
 
 #include <string>
 #include "PropertyKind.h"
+#include "JsonStream.hpp"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ public:
         return m_propertyName;
     }
 
-    virtual string serializeValue(const OBJ_T& obj) const = 0;
+    virtual JsonStream& serializeValue(const OBJ_T& obj, JsonStream& out) const = 0;
 
     virtual PropertyKind propertyKind() const = 0;
 };

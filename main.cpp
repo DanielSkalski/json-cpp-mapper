@@ -58,8 +58,6 @@ struct StringsMultiArray
 
 int main()
 {
-    SerializerFactory serializerFactory;
-
     Book book {"Czarodziciel", "Terry Pratchett", 20.5, true};
     Book book2 {"Kolor magii", "Terry Pratchett", 23.5, false};
     Book book3 {"Miecz przeznaczenia", "Andrzej Sapkowski", 33.0f, true};
@@ -73,9 +71,9 @@ int main()
     bookMapping.map("Price")->asNumber(MAPPER_GET_VALUE_FLOAT(Book, something));
     bookMapping.map("is_new")->asBoolean(MAPPER_GET_VALUE_BOOL(Book, is_new));
 
-    auto bookSerializer = serializerFactory.getObjectSerializer<Book>(bookMapping);
+    auto bookSerializer = JsonSerializer<Book>(bookMapping);
 
-    cout << bookSerializer->serialize(book);
+    cout << bookSerializer.serialize(book);
 
     Mapping<A> aMapping;
     aMapping.map("name")->asString(MAPPER_GET_VALUE(A, name));
@@ -84,9 +82,9 @@ int main()
     aMapping.map("book")->asObject<Book>(MAPPER_GET_VALUE_OBJ(A, Book, book))
                         ->mappedWith(bookMapping);
 
-    auto aSerializer = serializerFactory.getObjectSerializer<A>(aMapping);
+    auto aSerializer = JsonSerializer<A>(aMapping);
 
-    cout << aSerializer->serialize(a);
+    cout << aSerializer.serialize(a);
 
     Mapping<Shelf> shelfMapping;
     shelfMapping.map("name")->asString(MAPPER_GET_VALUE(Shelf, name));
@@ -96,9 +94,9 @@ int main()
                                      MAPPER_GET_INDEXED_VALUE_OBJ(Shelf, Book, books),
                                      bookMapping);
 
-    auto shelfSerializer = serializerFactory.getObjectSerializer<Shelf>(shelfMapping);
+    auto shelfSerializer = JsonSerializer<Shelf>(shelfMapping);
 
-    cout << shelfSerializer->serialize(shelf);
+    cout << shelfSerializer.serialize(shelf);
 
     NumbersCollection numbers { "Liczby", new int[5] { 1, 3, 4, 5, 6 }, 5 };
     Mapping<NumbersCollection> numbersMapping;
@@ -107,9 +105,9 @@ int main()
                                     MAPPER_ARRAY_GET_COUNT(NumbersCollection, count),
                                     MAPPER_GET_INDEXED_VALUE_INT(NumbersCollection, numbers));
 
-    auto numbersSerializer = serializerFactory.getObjectSerializer<NumbersCollection>(numbersMapping);
+    auto numbersSerializer = JsonSerializer<NumbersCollection>(numbersMapping);
 
-    cout << numbersSerializer->serialize(numbers);
+    cout << numbersSerializer.serialize(numbers);
 
     StringsCollection strings {
         "Napisy",
@@ -127,10 +125,9 @@ int main()
                                      MAPPER_ARRAY_GET_COUNT(StringsCollection, count),
                                      MAPPER_GET_INDEXED_VALUE_BOOL(StringsCollection, booleans));
 
-    auto stringsSerializer = serializerFactory.getObjectSerializer<StringsCollection>(stringsMapping);
+    auto stringsSerializer = JsonSerializer<StringsCollection>(stringsMapping);
 
-    cout << stringsSerializer->serialize(strings);
-
+    cout << stringsSerializer.serialize(strings);
 
 //    StringsMultiArray multiStrings
 //    {

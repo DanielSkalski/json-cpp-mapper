@@ -25,7 +25,7 @@ public:
 
     ~MappingForObjectPropertyChooser()
     {
-        std::cout << "Destructor MappingForObjectPropertyChooser" << std::endl;
+//        std::cout << "Destructor MappingForObjectPropertyChooser" << std::endl;
     }
 
     void mappedWith(Mapping<OBJ_T> mapping);

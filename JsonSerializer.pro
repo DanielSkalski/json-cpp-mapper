@@ -30,5 +30,6 @@ HEADERS += \
     MappingBuild/MappingForObjectPropertyChooser.hpp \
     MappingBuild/ItemsForArrayPropertyChooser.hpp \
     MappingBuild/PropertyKindChooser.hpp \
-    JsonSerializer.h
+    JsonSerializer.h \
+    JsonStream.hpp
 

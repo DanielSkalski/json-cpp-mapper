@@ -26,7 +26,7 @@ public:
     ArrayPropertyDefinition(const private_ctor&, const string& propertyName);
     virtual ~ArrayPropertyDefinition() { }
 
-    string serializeValue(const OBJ_T &obj) const override;
+    JsonStream& serializeValue(const OBJ_T &obj, JsonStream& out) const override;
 
     PropertyKind propertyKind() const override;
 };
@@ -46,9 +46,11 @@ ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::ArrayPropertyDefinition(const private
 // ----- METHODS --------------------------------------------------------------
 
 template<class OBJ_T, class ELEMENT_T>
-string ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::serializeValue(const OBJ_T &obj) const
+JsonStream &ArrayPropertyDefinition<OBJ_T, ELEMENT_T>::serializeValue(const OBJ_T &obj, JsonStream &out) const
 {
-    return m_serializer->serialize(obj);
+    m_serializer->serialize(obj, out);
+
+    return out;
 }
 
 template<class OBJ_T, class ELEMENT_T>

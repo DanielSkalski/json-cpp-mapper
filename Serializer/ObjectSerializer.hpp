@@ -28,7 +28,7 @@ public:
     ObjectSerializer(const private_ctor&, const Mapping<T>& mapping);
     virtual ~ObjectSerializer() { }
 
-    string serialize(const T& value) const override;
+    JsonStream& serialize(const T& value, JsonStream& out) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -44,28 +44,28 @@ ObjectSerializer<T>::ObjectSerializer(const private_ctor&, const Mapping<T>& map
 // ----- METHODS --------------------------------------------------------------
 
 template<class T>
-string ObjectSerializer<T>::serialize(const T &value) const
+JsonStream &ObjectSerializer<T>::serialize(const T &value, JsonStream &out) const
 {
-    stringstream out;
+    out << "{" << "\n";
 
-    out << "{" << endl;
-
+    int propertyIndex = 0;
+    int propertiesCount = m_mapping.properties().size();
     for (auto prop : m_mapping.properties())
     {
-        string propValue = prop->serializeValue(value);
+        out << "\"" << prop->propertyName() << "\" : ";
+        prop->serializeValue(value, out);
 
-        out << "\"" << prop->propertyName() << "\" : " << propValue << "," << endl;
+        if (propertyIndex < propertiesCount - 1)
+        {
+            out << "," << "\n";
+        }
+
+        propertyIndex++;
     }
 
-    // Remove last ',' sign.
-    if (m_mapping.properties().size() > 0)
-    {
-        out.seekp(-2, out.cur);
-    }
+    out << "\n" << "}" << "\n";
 
-    out << endl << "}" << endl;
-
-    return out.str();
+    return out;
 }
 
 } // namespace mapper
