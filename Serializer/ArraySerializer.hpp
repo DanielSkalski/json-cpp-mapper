@@ -45,7 +45,7 @@ ArraySerializer<OBJ_T, ELEMENT_T>::ArraySerializer(const private_ctor &,
 template<class OBJ_T, class ELEMENT_T>
 JsonStream& ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj, JsonStream& out) const
 {
-    out << "[" << "\n";
+    out.beginArray();
 
     int arraySize =  m_arraySize(obj);
 
@@ -53,15 +53,14 @@ JsonStream& ArraySerializer<OBJ_T, ELEMENT_T>::serialize(const OBJ_T &obj, JsonS
     {
         ELEMENT_T value = m_elementAccess(obj, i);
 
+        out.beginArrayElement();
         m_elementSerializer->serialize(value, out);
 
-        if (i < arraySize - 1)
-        {
-            out << "," << "\n";
-        }
+        bool isLastElement = (i == arraySize - 1);
+        out.endArrayElement(isLastElement);
     }
 
-    out << "]" << "\n";
+    out.endArray();
 
     return out;
 }
