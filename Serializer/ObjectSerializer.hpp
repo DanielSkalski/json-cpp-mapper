@@ -46,24 +46,23 @@ ObjectSerializer<T>::ObjectSerializer(const private_ctor&, const Mapping<T>& map
 template<class T>
 JsonStream &ObjectSerializer<T>::serialize(const T &value, JsonStream &out) const
 {
-    out << "{" << "\n";
+    out.beginObject();
 
     int propertyIndex = 0;
     int propertiesCount = m_mapping.properties().size();
     for (auto prop : m_mapping.properties())
     {
-        out << "\"" << prop->propertyName() << "\" : ";
+        out.beginProperty(prop->propertyName());
+
         prop->serializeValue(value, out);
 
-        if (propertyIndex < propertiesCount - 1)
-        {
-            out << "," << "\n";
-        }
+        bool isLastProperty = (propertyIndex == propertiesCount - 1);
+        out.endProperty(isLastProperty);
 
         propertyIndex++;
     }
 
-    out << "\n" << "}" << "\n";
+    out.endObject();
 
     return out;
 }

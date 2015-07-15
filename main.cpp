@@ -78,9 +78,9 @@ int main()
     Mapping<A> aMapping;
     aMapping.map("name")->asString(MAPPER_GET_VALUE(A, name));
     aMapping.map("title")->asString(MAPPER_GET_VALUE(A, title));
-    aMapping.map("number")->asNumber(MAPPER_GET_VALUE_INT(A, number));
     aMapping.map("book")->asObject<Book>(MAPPER_GET_VALUE_OBJ(A, Book, book))
                         ->mappedWith(bookMapping);
+    aMapping.map("number")->asNumber(MAPPER_GET_VALUE_INT(A, number));
 
     auto aSerializer = JsonSerializer<A>(aMapping);
 
